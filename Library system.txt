@@ -1,0 +1,132 @@
+Library system
+
+CREATE DATABASE library_system;
+
+USE library_system;
+
+CREATE TABLE Books (
+    BookID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255),
+    Author VARCHAR(255),
+    ISBN VARCHAR(50),
+    Genre VARCHAR(100),
+    Quantity INT,
+    AvailableQuantity INT
+);
+
+CREATE TABLE Members (
+    MemberID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(255),
+    Address VARCHAR(255)
+);
+
+CREATE TABLE Borrowing (
+    BorrowID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    BookID INT,
+    BorrowDate DATE,
+    ReturnDate DATE,
+    FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+CREATE TABLE Reservation (
+    ReservationID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    BookID INT,
+    ReservationDate DATE,
+    FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+-- Insert sample data for Books
+INSERT INTO Books (Title, Author, ISBN, Genre, Quantity, AvailableQuantity)
+VALUES ('To Kill a Mockingbird', 'Harper Lee', '9780061120084', 'Fiction', 5, 5),
+       ('1984', 'George Orwell', '9780451524935', 'Science Fiction', 3, 3),
+       ('The Catcher in the Rye', 'J.D. Salinger', '9780316769488', 'Fiction', 4, 4),
+       ('Pride and Prejudice', 'Jane Austen', '9780141439518', 'Romance', 6, 6),
+       ('The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 'Fiction', 7, 7);
+
+-- Insert sample data for Members
+INSERT INTO Members (Name, Email, Address)
+VALUES ('John Doe', 'john.doe@example.com', '123 Main St, Anytown'),
+       ('Jane Smith', 'jane.smith@example.com', '456 Oak St, Anycity'),
+       ('Alice Johnson', 'alice.johnson@example.com', '789 Elm St, Anyvillage');
+
+-- Insert sample data for Borrowing
+INSERT INTO Borrowing (MemberID, BookID, BorrowDate, ReturnDate)
+VALUES (1, 1, '2024-06-01', '2024-06-15'),
+       (2, 3, '2024-06-05', NULL),
+       (3, 5, '2024-06-10', NULL);
+
+-- Insert sample data for Reservation
+INSERT INTO Reservation (MemberID, BookID, ReservationDate)
+VALUES (1, 2, '2024-06-08'),
+       (3, 4, '2024-06-12');
+
+
+
+https://www.tutorialspoint.com/sql/sql-and-or-clauses.htm
+
+List all books:
+sql
+Copy code
+SELECT * FROM Books;
+List all members:
+sql
+Copy code
+SELECT * FROM Members;
+List all borrowings:
+sql
+Copy code
+SELECT * FROM Borrowing;
+List all reservations:
+sql
+Copy code
+SELECT * FROM Reservation;
+List books borrowed by a specific member:
+sql
+Copy code
+SELECT * FROM Borrowing WHERE MemberID = [MemberID];
+List books reserved by a specific member:
+sql
+Copy code
+SELECT * FROM Reservation WHERE MemberID = [MemberID];
+List available books (books not currently borrowed):
+sql
+Copy code
+SELECT * FROM Books WHERE AvailableQuantity > 0;
+Borrow a book:
+sql
+Copy code
+INSERT INTO Borrowing (MemberID, BookID, BorrowDate) VALUES ([MemberID], [BookID], CURDATE());
+Return a book:
+sql
+Copy code
+UPDATE Borrowing SET ReturnDate = CURDATE() WHERE MemberID = [MemberID] AND BookID = [BookID];
+Reserve a book:
+sql
+Copy code
+INSERT INTO Reservation (MemberID, BookID, ReservationDate) VALUES ([MemberID], [BookID], CURDATE());
+Cancel a book reservation:
+sql
+Copy code
+DELETE FROM Reservation WHERE MemberID = [MemberID] AND BookID = [BookID];
+Add a new member:
+sql
+Copy code
+INSERT INTO Members (Name, Email, Address) VALUES ('[Name]', '[Email]', '[Address]');
+Add a new book:
+sql
+Copy code
+INSERT INTO Books (Title, Author, ISBN, Genre, Quantity, AvailableQuantity) VALUES ('[Title]', '[Author]', '[ISBN]', '[Genre]', [Quantity], [Quantity]);
+Update book quantity:
+sql
+Copy code
+UPDATE Books SET Quantity = [NewQuantity], AvailableQuantity = [NewQuantity] WHERE BookID = [BookID];
+Delete a book:
+sql
+Copy code
+DELETE FROM Books WHERE BookID = [BookID];
+Adjust the queries and table/column names as per your specific requirements.
