@@ -1,0 +1,155 @@
+Q1. Write a note on history of C Programming.
+Ans. Before C Programming, we had B programming.
+     C programming language developed at AT & T's Bell Laboratories of USA. 
+     It Was designed and written by a man named DENNIS RITCHIE.
+     C was developed in 1969, And Released in 1972.
+     C Programming was developed to write the code for utility software. 
+
+Q2. Write any 5 features and applications of C Programming.
+Ans. 5 Features of C programming:-
+       1.Simple 
+       2.Mid-Level Programming language
+       3.Portability
+       4.Machine Independent 
+       5.Structured Programming language
+       6.Proformance and Efficiency
+
+     5 Application of C programming.
+       1.Embedded systems
+       2.Operating system 
+       3.Compilers
+       4.Interpreters
+       5.System Software.
+ 
+
+Q1. Explain basic structure of a c program with an example.
+Ans. Basic structure of a C Program are follow:-
+A. Comment line- 
+  This is a note where we explain about the program and also explain what certain part of your program is do/ indicate the purpose of the program.
+Comments are two types:-
+a. Single line comments- In this we write a single to comment. It is denoted by the '//'.
+b. Multiline comments- IN this we write multiple line in comment. It is denoted by the        '/* .........*/'.
+
+B. Pre-processor Directive:-#include<stdio.h> tells the compiler to include information about the standard input/output library. It is also used in symbolic constant such as #define PI 3.14(value).
+The stdio.h standard input output header file contains definition & declaration of system defined function such as printf(), scanf(), etc..  .
+
+C. Main Function:-
+It is the user define function and every C program must have a 'main()' function. This function is where the program starts executing. It's mandatory in C programs.
+
+Syntax: 
+   main()
+      {
+         .......
+         .......
+      }
+ The main() function return value when it declared by datatype as int main().
+ From main function actually program is started and it is encloses within the pair of curly braces. 
+
+D. Statements:-
+   Inside 'main()' we write statements that perform tasks. 
+   Statements are instruction that tell the computer what to do.
+
+Example:-
+
+#inlude<stdio.h> //Include the standard input- output library
+#define PI 3.14
+
+//The main function where execution begins
+int main()
+{
+
+   // Print a statements to the cnsole
+    printf("Welcome Wipro:\n");
+     
+    return 0;
+
+}
+
+
+
+
+
+
+        
+Q2. What are the different types data types in c programming?
+Ans. Data types specify how we enter data into our programs and what type of data we enter. C language has some predefined set of data types to handle various kinds of data that we can use in our program. Data type determines the type of data a variable will hold.
+
+C language supports 2 different type of data types:
+a. Primary data types:
+These are fundamental data types in C namely integer(int), floating point(float),
+character(char) and void.
+ int size = 2 bytes
+ long int = 4 bytes
+ float = 4 bytes
+ double = 8 bytes
+ long double = 10
+ char = 1 byte
+
+b. Derived data types:
+Derived data types are nothing but primary data-types but a little twisted or grouped
+together like array, structure, union and pointer. These are discussed in details later.
+
+
+Q3. Define macro. Write a c program to demonstrate user defined macro.
+Ans. A macro is a block of a code which will be replace by the value of the macro.
+     It is a  pre=processor directive that allows you to define a symbolic name or identifies for a certain value or a block of code.
+     Macros are processed by the pre-processor before actual compilation begins. 
+    Example :
+     #define PI 3.14
+      PI =====> 3.14
+
+   #include<stdio.h>
+   #defien PI 3.14 //Define a macro for PI.
+    
+     int main()
+     {
+         float radius =5.0
+         float area;
+        
+          area = PI * radius * radius;
+          printf("Radius of the circle : %.2f \n", radius);
+          printf("Area of the circle: %.2f \n ", area);
+
+        return 0;
+      }
+
+
+Q4.Write a c program to demonstrate printf(),scanf(),fgets() and puts() with an example.
+Ans.
+#include <stdio.h>
+#include <string.h>
+
+int main() 
+{
+    char name[50];
+    int age;
+    float salary;
+    char sentence[100];
+
+    // Demonstrating printf() and scanf() for basic input and output
+    printf("Enter your name: ");
+    scanf("%s", name);  // Read a string input (ignores spaces)
+    
+    printf("Enter your age: ");
+    scanf("%d", &age);  // Read an integer input
+    
+    printf("Enter your salary: ");
+    scanf("%f", &salary);  // Read a float input
+
+    // Displaying user information using printf()
+    printf("\n--- User Information ---\n");
+    printf("Name: %s\n", name);
+    printf("Age: %d\n", age);
+    printf("Salary: %.2f\n", salary);
+
+    // Using fgets() and puts() to handle string input/output
+    printf("\nEnter a sentence (up to 99 characters): ");
+    getchar();  // Clear input buffer
+    fgets(sentence, sizeof(sentence), stdin);  // Read a line of input including spaces
+
+    // Displaying the sentence entered by the user using puts()
+    printf("You entered: ");
+    puts(sentence);  // Output the string
+
+    return 0;
+}
