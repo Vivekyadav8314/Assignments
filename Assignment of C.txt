@@ -153,3 +153,606 @@ int main()
 
     return 0;
 }
+
+
+Q1. What is Makefile? Write a C program to demonstrate Makefile.
+Ans. Makefile is a program building tool which is part of Unix and Linux OS used to automate the process of building software programs.
+*Makefile is a set of commands(similar to terminal commands).
+*It serves as a script that specifies how to compile and link program from its source and its dependencies.
+*Makefile does not have Extension.
+*In a single make file we can create multiple targets to compile and to remove object, binary files.
+*You can compile your project(program) any number of times by using Makefile.
+
+Example:-
+main.c
+
+#include<stdio.h>
+#include"vivek.h" //user defined header file
+
+int main()
+{
+        printf("Inside main function\n");
+        printf("Calling hello function\n");
+        hello();
+        printf("Calling add function\n");
+        add(3,5);
+        printf("Back in main function\n");
+
+        return 0;
+}
+
+hello.c
+
+#include<stdio.h>
+#include"vivek.h"
+
+void hello()
+{
+        printf("Hi from Wipro\n");
+}
+
+add.c
+
+#include<stdio.h>
+#include"vivek.h"
+
+void add(int a, int b) //a and b are argument
+{
+        printf("Sum = %d\n",a+b);
+}
+
+vivek.h
+
+void hello();
+void add(int a, int b);
+
+1. gcc main.c hello.c add.c -o final
+2../final
+
+sudo apt install make
+----------------------
+
+Makefile:
+
+final:
+        gcc main.c add.c hello.c -o final
+
+
+
+Q2. Write a C program to demonstrate relational, logical and bitwise operators
+Ans. Relational Operators:
+
+#include <stdio.h>
+
+int main() 
+{
+    int a = 5, b = 3;
+
+    // Relational operators
+    printf("Relational Operators:\n");
+    printf("%d > %d is %d\n", a, b, a > b);
+    printf("%d < %d is %d\n", a, b, a < b);
+    printf("%d >= %d is %d\n", a, b, a >= b);
+    printf("%d <= %d is %d\n", a, b, a <= b);
+    printf("%d == %d is %d\n", a, b, a == b);
+    printf("%d != %d is %d\n", a, b, a != b);
+
+    return 0;
+}
+ output:-5 > 3 is 1
+5 < 3 is 0
+5 >= 3 is 1
+5 <= 3 is 0
+5 == 3 is 0
+5 != 3 is 1
+
+*Logical Operators:-
+#include<stdio.h>
+
+int main()
+{
+
+	int a=5, b=5, c=10, result;
+
+	result=(a==b) && (c>b);
+
+	printf("(a==b) && (c> b) is %d \n ", result);//1
+
+	result=(a==b) && (c<b);
+	printf("(a==b) && (c<b) is %d\n", result);//o
+
+	result=(a==b) || (c<b);
+	printf("(a==b) && (c<b) is %d\n", result);//1
+
+	result =(a!=b) || (c<b);
+	printf("(a!=b) is %d \n", result);//0
+					  //
+        result=!(a!=b);
+	printf("!(a!=b) is %d\n", result); //--> 0 !0 is 1
+
+	result =!(a==b);
+	printf("!(a==b) is %d \n ", result);
+
+	return 0;
+}
+
+Output:- (a==b) && (c>b) is 1
+         (a==b) && (c<b) is 0
+         (a==b) && (a<b) is 1
+         (a!=b) is 0
+         !(a!=b) is 1
+         !(a==b) is 0
+
+*Bitwise Operators:-
+#include <stdio.h>
+
+int main() {
+    unsigned int num1 = 13;   // 0000 1101 in binary
+    unsigned int num2 = 7;    // 0000 0111 in binary
+    unsigned int result;
+
+    // Bitwise AND (&) operator
+    result = num1 & num2;     // 0000 0101 = 5 in decimal
+    printf("num1 & num2 = %u\n", result);
+
+    // Bitwise OR (|) operator
+    result = num1 | num2;     // 0000 1111 = 15 in decimal
+    printf("num1 | num2 = %u\n", result);
+
+    // Bitwise XOR (^) operator
+    result = num1 ^ num2;     // 0000 1010 = 10 in decimal
+    printf("num1 ^ num2 = %u\n", result);
+
+    // Bitwise NOT (~) operator
+    result = ~num1;           // 1111 0010 in binary (assuming 8-bit representation)
+    printf("~num1 = %u\n", result);
+
+    // Bitwise left shift (<<) operator
+    result = num1 << 2;       // 0011 0100 = 52 in decimal
+    printf("num1 << 2 = %u\n", result);
+
+    // Bitwise right shift (>>) operator
+    result = num1 >> 2;       // 0000 0011 = 3 in decimal
+    printf("num1 >> 2 = %u\n", result);
+
+    return 0;
+}
+
+Output:-num1 & num2 = 5
+num1 | num2 = 15
+num1 ^ num2 = 10
+~num1 = 4294967282
+num1 << 2 = 52
+num1 >> 2 = 3
+
+
+
+
+Q3. Explain storage classes with an example.
+Ans. Storage classes define the scope, visibility and lifetime of the variables.
+ *Four storage class are
+ i. auto(automatic):- The 'auto' storage class is the default storage class for all local variables declred within a function or a block.
+Their lifetime is limited to the block or function. 
+
+ii. static:-static storage class is used to retain the values between the function calls.
+
+iii.register:
+register storage class:- register storage class is specifier that hint to thr compiler that a particular variable shoulr be stores in a processor register for quicker access.
+-> CPU registers are small, fast storage locations within CPU that are used to store temporary data and perform operations.
+
+
+iv. extern:-
+extern storage class is used to declare a global variable or function in another file.
+It extends the visibility of the variable or function to entire progrma.
+This is especially useful in multi-file programs where you need to access variables or funtions across different files. 
+ example:-external.c
+
+ example:-external.c
+
+#include<stdio.h>
+
+int globalvariable=40;
+
+void externalfunction()
+{
+        printf("This is an external function\n");
+}
+
+main.c
+
+#include<stdio.h>
+
+extern int globalvariable;
+
+extern void externalfunction();
+
+int main()
+{
+        printf("Value of the global variable : %d\n",globalvariable);
+
+        externalfunction();
+
+        return 0;
+}
+
+
+Q1. Write a c program to check whether character is uppercase or lowercase.
+Ans:-
+#include <stdio.h>
+
+int main() {
+    char ch;
+
+   
+    printf("Enter a character: ");
+    scanf(" %c", &ch);
+
+  
+    if (ch >= 'A' && ch <= 'Z') 
+    {
+        printf("'%c' is uppercase.\n", ch);
+    }
+   else
+     {
+        printf("'%c' is lowercase.\n", ch);
+     }
+   
+
+    return 0;
+}
+ 
+Output:-1.Enter a character: A
+        A is Uppercase.
+        2.Enter a character: c
+        c is lowercase.
+
+        
+
+Q2.Write a c program to input week number and print the week day.
+Ans.
+#include <stdio.h>
+
+int main() {
+    int weekNumber;
+
+    
+    printf("Enter week number (1-7): ");
+    scanf("%d", &weekNumber);
+
+   
+    switch (weekNumber) {
+        case 1:
+            printf("Week %d: Sunday\n", weekNumber);
+            break;
+        case 2:
+            printf("Week %d: Monday\n", weekNumber);
+            break;
+        case 3:
+            printf("Week %d: Tuesday\n", weekNumber);
+            break;
+        case 4:
+            printf("Week %d: Wednesday\n", weekNumber);
+            break;
+        case 5:
+            printf("Week %d: Thursday\n", weekNumber);
+            break;
+        case 6:
+            printf("Week %d: Friday\n", weekNumber);
+            break;
+        case 7:
+            printf("Week %d: Saturday\n", weekNumber);
+            break;
+        default:
+            printf("Invalid week number. Please enter a number between 1 and 7.\n");
+    }
+
+    return 0;
+}
+
+Output:-
+       Enter week number(1-7): 4
+       week 4: Wednesday
+
+
+Q3.Write a c program to input electricity unit charges and calculate total electricity bill according to given condition:
+    a. For 1st 50 units, Rs. 0.50/unit
+    b.For next 100 units, Rs.0.75/unit
+    c.For next 100 units, Rs.1.20/unit
+    d.For unit above 250, Rs. 1.50/unit
+    Ab additional surcharge of 20% is added to the bill
+Ans:-
+#include <stdio.h>
+
+int main() 
+{
+    float units, totalBill = 0.0, surcharge = 0.0;
+
+    
+    printf("Enter electricity units consumed: ");
+    scanf("%f", &units);
+
+   
+    if (units <= 50) 
+       {
+        totalBill = units * 0.50;
+       } 
+      else if (units > 50 && units <= 150) 
+        {
+        totalBill = 50 * 0.50 + (units - 50) * 0.75;
+         } 
+       else if (units > 150 && units <= 250) 
+         {
+        totalBill = 50 * 0.50 + 100 * 0.75 + (units - 150) * 1.20;
+         } 
+        else 
+      {
+        totalBill = 50 * 0.50 + 100 * 0.75 + 100 * 1.20 + (units - 250) * 1.50;
+    }
+
+    // Calculate surcharge (20% of total bill)
+    surcharge = 0.20 * totalBill;
+
+   
+    totalBill += surcharge;
+
+  
+    printf("Total electricity bill including 20%% surcharge: Rs. %.2f\n", totalBill);
+
+    return 0;
+}
+Output:- Enter electricity units consumed: 50
+         Total electricity bill including 20% surcharge: Rs. 30.00
+         
+
+Q4. Write a c program, to find first and last digit using loop.
+Ans:-
+    #include <stdio.h>
+
+int main() 
+{
+    int number, firstDigit, lastDigit;
+    
+   
+    printf("Enter a number: ");
+    scanf("%d", &number);
+    
+    
+    lastDigit = number % 10;
+    
+    
+    while (number >= 10) 
+    {
+        number /= 10; // Remove the last digit
+    }
+    firstDigit = number; // The remaining number is the first digit
+    
+   
+    printf("First digit: %d\n", firstDigit);
+    printf("Last digit: %d\n", lastDigit);
+    
+    return 0;
+}
+Output:- 
+Enter a number:3457
+First digit: 3
+Last digit: 7
+
+Q5.Write a c program to convert temperature from Celsius to Fahrenheit.
+Ans:-
+#include <stdio.h>
+
+int main() {
+    float celsius, fahrenheit;
+
+    
+    printf("Enter temperature in Celsius: ");
+    scanf("%f", &celsius);
+
+    // Convert Celsius to Fahrenheit using the formula: F = (C * 9/5) + 32
+    fahrenheit = (celsius * 9 / 5) + 32;
+
+   
+    printf("%.2f Celsius is equal to %.2f Fahrenheit.\n", celsius, fahrenheit);
+
+    return 0;
+}
+Output:-
+Enter temperature in Celsius: 42
+42.00 Celsius is equal to 107.60 Fahrenheit.
+
+1. Write a C program to search for a given element using linear search.
+Ans.
+#include<stdio.h>
+
+int main()
+{
+    int arr[100];
+
+    int size,element;
+
+    printf("Enter the size of the array :\n");
+    scanf("%d",&size);
+
+    printf("Enter the array elements :\n");
+    for(int i=0;i<size;i++)
+    {
+        scanf("%d",&arr[i]);
+    }
+
+   
+    printf("Enter the element to search: ");
+    scanf("%d", &element);
+
+    // Perform linear search
+    int found = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == element) {
+            printf("Element %d found at index %d.\n", element, i);
+            found = 1;
+            break; // Exit the loop as soon as key is found
+        }
+    }
+
+    // If element is not found, notify the user
+    if (!found) {
+        printf("Element %d not found in the array.\n", element);
+    }
+
+    return 0;
+}
+Output:-
+Enter the size of the array :
+5
+Enter the array elements :
+1
+2
+3
+4
+5
+Enter the element to search: 8
+Element 8 not found in the array.
+
+And
+Enter the size of the array :
+5
+Enter the array elements :
+2
+4
+6
+8
+9
+Enter the element to search: 6 
+Element 6 found at index 2.
+
+
+2. Write a C program to search for a given element using binary search
+Ans.
+#include<stdio.h>
+
+int main()
+{
+    int arr[100];
+
+    int size,element;
+
+    printf("Enter the size of the array :\n");
+    scanf("%d",&size);
+
+    printf("Enter the array elements :\n");
+    for(int i=0;i<size;i++)
+    {
+        scanf("%d",&arr[i]);
+    }
+
+   
+    printf("Enter the element to search: ");
+    scanf("%d", &element);
+
+     // Perform binary search
+    int low = 0;
+    int high = size - 1;
+    int found = 0;
+    while (low <= high) {
+        int mid = (low + high) / 2;
+
+        if (arr[mid] == element) 
+        {
+            printf("Element %d found at index %d.\n", element, mid);
+            found = 1;
+            break;
+        } else if (arr[mid] < element) 
+        {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    // If element is not found, notify the user
+    if (!found) {
+        printf("Element %d not found in the array.\n", element);
+    }
+
+    return 0;
+}
+Output:-
+Enter the size of the array :
+5
+Enter the array elements :
+1
+2
+8
+6
+4
+Enter the element to search: 2
+Element 2 found at index 1.
+
+And
+Enter the size of the array :
+5
+Enter the array elements :
+1
+2
+3
+4
+5
+Enter the element to search: 7
+Element 7 not found in the array.
+
+
+
+3. Write a C program to sort the elements of array using bubble sort.
+Ans.
+#include<stdio.h>
+
+int main()
+{
+    int arr[100];
+
+    int size,temp;
+
+    printf("Enter the size of the array :\n");
+    scanf("%d",&size);
+
+    printf("Enter the array elements :\n");
+    for(int i=0;i<size;i++)
+    {
+        scanf("%d",&arr[i]);
+    }
+
+    // Bubble sort algorithm
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - 1 - i; j++) {
+            // Swap if the element found is greater than the next element
+            if (arr[j] > arr[j + 1]) {
+                // Perform the swap
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    // Print the sorted array
+    printf("\nSorted Array in ascending order:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+   Output:-
+  Enter the size of the array :
+6
+Enter the array elements :
+9
+4
+6
+1
+5
+2
+
+Sorted Array in ascending order:
+1 2 4 5 6 9 
+
