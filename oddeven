@@ -1,0 +1,69 @@
+#include<iostream>
+using namespace std;
+
+class evenodd
+{
+    private: int a;
+
+    public: void input()
+        {
+            cout<<"Enter the number to check whether it is odd/even"<<endl;
+            cin>>a;
+        }
+        friend int funcevenodd(evenodd);
+};
+
+int funcevenodd(evenodd b)
+{
+    if(b.a%2==0)
+        return 1;
+    else
+        return 0;
+}
+
+int main()
+{
+    evenodd obj1;
+
+    obj1.input();
+
+    if(funcevenodd(obj1))
+        cout<<"Even"<<endl;
+    else
+        cout<<"Odd"<<endl;
+
+    return 0;
+}
+
+---------
+#include<iostream>
+using namespace std;
+
+class travel
+{
+    private: int distance,speed;
+
+    public: void set_values(int m, int n)
+        {
+            distance=m;
+            speed=n;
+        }
+        friend double findtimetotravel(travel);
+};
+
+double findtimetotravel(travel t)
+{
+    double time=(double)t.distance/(double)t.speed;
+    return time;
+}
+
+int main()
+{
+    travel obj1;
+
+    obj1.set_values(80,30);
+
+    cout<<"Time taken = "<<findtimetotravel(obj1)<<" Hours"<<endl;
+   
+    return 0;
+}
