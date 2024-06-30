@@ -756,3 +756,337 @@ Enter the array elements :
 Sorted Array in ascending order:
 1 2 4 5 6 9 
 
+
+1.Write any five difference between static memory allocation and dynamic memory allocation.
+Ans.1. Memory Allocation Time:
+    - Static memory allocation: Memory is allocated at compile-time.
+                               Example: When you declare a global variable or a static      variable within a function, memory is allocated statically.
+   
+ - Dynamic memory allocation: Memory is allocated at runtime.
+                              Example: Using functions like malloc(), calloc()
+
+2. Memory Size:
+    - Static memory allocation: Memory size is fixed and determined at compile-time.
+    - Dynamic memory allocation: Memory size can be determined at runtime and can change.
+
+3. Memory Location:
+    - Static memory allocation: Memory is allocated on the stack or in the data segment.
+    - Dynamic memory allocation: Memory is allocated on the heap.
+
+4. Memory Deallocation:
+    - Static memory allocation: Memory is automatically deallocated when the program ends.
+    - Dynamic memory allocation: Memory must be explicitly deallocated by the programmer using free() or delete.
+
+5. Flexibility:
+    - Static memory allocation: Less flexible, as memory size and location are fixed.
+    - Dynamic memory allocation: More flexible, as memory size and location can be determined at runtime.
+
+
+2.Write a C program to demonstrate malloc(), calloc(), realloc() and free() using valgrind.
+Ans.
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() 
+{
+    int *ptr1, *ptr2, *ptr3;
+
+    // Using malloc()
+    ptr1 = (int*) malloc(5 * sizeof(int));
+    if (ptr1 == NULL) {
+        printf("Memory allocation failed\n");
+        return -1;
+    }
+    for (int i = 0; i < 5; i++) {
+        ptr1[i] = i * 2;
+    }
+
+    // Using calloc()
+    ptr2 = (int*) calloc(5, sizeof(int));
+    if (ptr2 == NULL) {
+        printf("Memory allocation failed\n");
+        return -1;
+    }
+    for (int i = 0; i < 5; i++) {
+        ptr2[i] = i * 3;
+    }
+
+    // Using realloc()
+    ptr3 = (int*) realloc(ptr1, 10 * sizeof(int));
+    if (ptr3 == NULL) {
+        printf("Memory allocation failed\n");
+        return -1;
+        }
+    for (int i = 5; i < 10; i++) {
+        ptr3[i] = i * 4;
+    }
+
+    // Freeing memory
+    free(ptr2);
+    free(ptr3);
+
+    return 0;
+}
+gcc -g file_name.c -o file_name
+valgrind --leak-check=full ./file_name
+
+
+
+3.What is pointer? Explain different types of pointers with programming example
+Ans.A pointer is a variable that stores the memory address of another variable. It is a fundamental concept in programming, especially in languages like C.  Pointers allow for indirect memory access, dynamic memory allocation, and passing variables by reference.
+
+Type of pointers are :-
+1.Wild Pointers- 
+⦁A wild pointer is a pointer that has not been initilaization to point to a specific memory location.
+Such pointer can cantain arbitrary value ad if dereferenced can  lead to undefined behaviour.
+⦁It may lead to prigram crash or corruptio of data.
+⦁Example :- int *pte//Wild pointer
+
+#include <stdio.h>
+
+int main() {
+    int *ptr;  // Declaring a pointer without initializing it
+
+    // Attempting to dereference a wild pointer
+    *ptr = 10;  // Dereferencing ptr, which is uninitialized (wild pointer)
+
+    printf("Value at wild pointer address: %d\n", *ptr);
+
+    return 0;
+}
+
+ 
+2. NULL Pointer:
+⦁A NULL pointer is a spacial type of pointer in C programming that is assigned a value of NULL.
+⦁THis value indicates that the pointer is not pointing to any valid memory location.
+
+Example:-
+#include <stdio.h>
+
+int main() {
+    int *ptr = NULL;  // Initialize pointer to NULL
+
+    // Attempting to dereference a NULL pointer
+    // *ptr = 10;  // Uncommenting this line will cause a runtime error (segmentation fault)
+
+    if (ptr == NULL) {
+        printf("Pointer is NULL\n");
+    } else {
+        printf("Pointer is not NULL\n");
+    }
+
+    return 0;
+}
+
+3. void Pointer:-
+⦁A void pointer is also known as generic pointer.
+⦁It is declared using void type andd it can hold the address of any data type.
+⦁The key feature of a void pointer is it is not associated with any particular data type.
+⦁Using void pointer, we can print int value, float/double value, string and also we can print the address.
+
+Example:-
+#include <stdio.h>
+
+int main() {
+    int num = 10;
+    float f = 3.14;
+    char ch = 'A';
+
+    void *ptr;  // Declare a void pointer
+
+    // Pointing void pointer to different data types
+    ptr = &num;
+    printf("Value of num: %d\n", *(int *)ptr);
+
+    ptr = &f;
+    printf("Value of f: %.2f\n", *(float *)ptr);
+
+    ptr = &ch;
+    printf("Value of ch: %c\n", *(char *)ptr);
+
+    return 0;
+}
+Output:-
+Value of num: 10
+Value of f: 3.14
+Value of ch: A
+
+
+4. Constant Pointer:-
+⦁A Constant pointer is a pointer whose address value cannot be changes after initialization.
+⦁Constant pointer must be initialized when it is declared.
+⦁The data at the memeory location it points to can be modified, but the pointer itself cannot point to defferent location.
+
+Example:-
+#include <stdio.h>
+
+int main() {
+    int num1 = 10;
+    int num2 = 20;
+
+    // Constant pointer to integer
+    int *const ptr = &num1;  // Pointer 'ptr' is constant
+
+    printf("Value of num1: %d\n", *ptr);  // Accessing value using ptr
+
+    // Attempting to change the value pointed by ptr
+    *ptr = 15;  // Valid: modifying value at address pointed by ptr
+    printf("Modified value of num1: %d\n", *ptr);
+
+    // Attempting to change the address pointed by ptr
+    // ptr = &num2;  // Invalid: Changing address ptr points to (const pointer)
+
+    return 0;
+}
+Output-Value of num1: 10
+Modified value of num1: 15
+
+5.Pointer to constant:
+⦁A pointer to a constant is a pointer that points to a constant value.
+⦁This means, that the data pointed to by the pointer cannot be modified through the pointer, evan though pointer iteself can be made to point to another locarion.
+
+Example:-
+#include <stdio.h>
+
+int main() {
+    int num1 = 10;
+    int num2 = 20;
+
+    // Pointer to constant integer
+    const int *ptr = &num1;
+
+    printf("Value of num1: %d\n", *ptr);  // Accessing value using ptr
+
+    // Attempting to change the value pointed by ptr
+    // *ptr = 15;  // Invalid: Attempting to modify constant value through ptr
+
+    // Pointing to a different constant integer
+    ptr = &num2;
+    printf("Value of num2: %d\n", *ptr);  // Accessing value using ptr
+
+    return 0;
+}
+Output-Value of num1: 10
+Value of num2: 20
+
+6.Pointer to Pointer:-
+Example
+#include <stdio.h>
+
+int main() {
+    int num = 10;
+    int *ptr1 = &num;  // Pointer to num
+    int **ptr2 = &ptr1;  // Pointer to ptr1 (pointer to pointer)
+
+    // Accessing and modifying value using pointer to pointer
+    printf("Value of num: %d\n", **ptr2);  // Prints: Value of num: 10
+
+    // Modifying value through pointer to pointer
+    **ptr2 = 20;
+    printf("Modified value of num: %d\n", **ptr2);  // Prints: Modified value of num: 20
+
+    return 0;
+}
+Output-Value of num: 10
+Modified value of num: 20
+
+
+1. Explain OOP concepts with an example
+Ans:-Class: Think of a blueprint or a recipe for building something. For example, a "Car Blueprint" defines what a car should have: wheels, engine, doors, etc.
+
+Object: An object is an actual instance created based on the class blueprint. So, a specific car like a "Toyota Camry" is an object created from the "Car Blueprint".
+
+*Encapsulatio:
+Encapsulation is like a gift box that hides the inner workings of a present. It bundles data (attributes) and methods (functions) together inside the class.
+For instance, a car's engine is encapsulated — you don't need to know how the engine works to drive the car. You just use the accelerator (method) to make the car go faster.
+
+*Inheritance:
+Inheritance is akin to passing traits or properties from parents to children. In the real world, children inherit traits like eye color or hair type from their parents.
+For example, a "Luxury Car" class can inherit features (attributes and methods) from a more general "Car" class, adding extra features like leather seats or advanced navigation.
+
+=>In inheritance two Class are:
+1. Base Class- It is also called a Parent class and Super class.
+2. Derived Class-This is derived from Base class.
+
+=>Types Of Inheritance
+1.Single inheritance
+2.Multiple inheritance
+3.Hierarchical inheritance
+4.Multilevel inheritance
+5.Hybrid inheritance
+
+
+*Polymorphism:
+Polymorphism means "many forms". It allows objects of different types to be treated as objects of a common base type.
+Think of a "Vehicle" class with a method called drive(). A car, a bicycle, and a truck can all have their own unique drive() method, but you can call drive() on any vehicle and it behaves differently based on the specific type of vehicle.
+
+
+
+
+2. Write any 5 differences between C and C++.
+Ans.Here are five key differences between C and C++:
+1.Programming Paradigm:
+=>C: C is a procedural programming language, which means it focuses on functions or procedures that operate on data.
+=>C++: C++ supports both procedural and object-oriented programming paradigms. It extends C by adding classes and objects, allowing for better organization and reusability of code.
+
+2.Standard Input/Output:
+=>C: In C, input and output operations are performed using functions like printf and scanf.
+=>C++: C++ uses stream-based input/output (iostream library), where input is read from cin and output is written to cout. It provides a more flexible and type-safe approach compared to C's printf and scanf.
+
+3.Memory Management:
+=>C: Memory management in C is done using functions like malloc, calloc, realloc, and free from the <stdlib.h> library.
+=>C++: C++ supports these C functions but also introduces new and delete operators for dynamic memory allocation and deallocation. Additionally, C++ provides smart pointers (std::unique_ptr, std::shared_ptr, std::weak_ptr) for safer and automated memory management.
+
+4.Function Overloading:
+=>C: C does not support function overloading, meaning you cannot have multiple functions with the same name but different parameter types or numbers.
+=>C++: C++ supports function overloading, allowing you to define multiple functions with the same name but different parameters. This promotes code readability and reusability.
+
+5.Namespace Support:
+=>C: C does not support namespaces. All global identifiers must have unique names across the entire program.
+=>C++: C++ introduces namespaces (namespace keyword), which help organize code into logical groups and prevent name conflicts. Namespaces are particularly useful when integrating multiple libraries or modules into a single program.
+
+
+
+
+3. Explain iostream, istream, ostream, cout, cin and endl
+Ans.- iostream is the library that enables input/output operations.
+
+- ostream is the output stream that carries data from your program to the outside world.
+
+- cout is the tap that sends data to the screen.
+
+- cin is the pipe that reads data from the keyboard.
+
+- endl is the "enter" key that moves to a new line and forces the output to appear immediately.
+
+
+
+4.Write a C++ program to check whether a given number is prime or not
+Ans.
+#include <iostream>  
+using namespace std;  
+int main()  
+{  
+  int n, i, m=0, flag=0;  
+  cout << "Enter the Number to check Prime: ";  
+  cin >> n;  
+  m=n/2;  
+  for(i = 2; i <= m; i++)  
+  {  
+      if(n % i == 0)  
+      {  
+          cout<<"Number is not Prime."<<endl;  
+          flag=1;  
+          break;  
+      }  
+  }  
+  if (flag==0)  
+      cout << "Number is Prime."<<endl;  
+  return 0;  
+}  
+Output:
+
+Enter the Number to check Prime: 17  
+ Number is Prime.   
+Enter the Number to check Prime: 57  
+Number is not Prime.
