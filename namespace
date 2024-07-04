@@ -1,0 +1,185 @@
+// Bookmanager namespace
+namespace Bookmanager {
+  const int MAX_BOOKS = 100;
+  struct Book {
+    int id;
+    std::string title;
+    std::string author;
+  };
+  Book books[MAX_BOOKS];
+  int numBooks = 0;
+
+  void addBook(int id, std::string title, std::string author) {
+    if (numBooks < MAX_BOOKS) {
+      books[numBooks].id = id;
+      books[numBooks].title = title;
+      books[numBooks].author = author;
+      numBooks++;
+      std::cout << "Book Added: " << title << " by " << author << std::endl;
+    } else {
+      std::cout << "Library is full!" << std::endl;
+    }
+  }
+
+  void removeBook(int id) {
+id removeBook(int id) {
+    for (int i = 0; i < numBooks; i++) {
+      if (books[i].id == id) {
+        for (int j = i; j < numBooks - 1; j++) {
+          books[j] = books[j + 1];
+        }
+        numBooks--;
+        std::cout << "Book Removed: " << id << std::endl;
+        return;
+      }
+    }
+    std::cout << "Book not found!" << std::endl;
+  }
+
+  void displayBooks() {
+    std::cout << "Display Books in Library:" << std::endl;
+    for (int i = 0; i < numBooks; i++) {
+      std::cout << books[i].title << " by " << books[i].author << std::endl;
+    }
+  }
+}
+
+// Membermanager namespace
+namespace Membermanager {
+  const int MAX_MEMBERS = 100;
+struct Member {
+    int id;
+    std::string name;
+  };
+  Member members[MAX_MEMBERS];
+  int numMembers = 0;
+
+  void addMember(int id, std::string name) {
+    if (numMembers < MAX_MEMBERS) {
+      members[numMembers].id = id;
+      members[numMembers].name = name;
+      numMembers++;
+      std::cout << "Member Added: " << name << std::endl;
+    } else {
+      std::cout << "Membership is full!" << std::endl;
+    }
+  }
+
+  void displayMembers() {
+    std::cout << "Display Members:" << std::endl;
+    for (int i = 0; i < numMembers; i++) {
+      std::cout << members[i].name << std::endl;
+    }
+  }
+}
+int main() {
+  using namespace Bookmanager;
+  using namespace Membermanager;
+
+  addBook(1988, "1988", "Chetan Bhagat");
+  addBook(1234, "C", "Balaguruswamy");
+  addMember(1, "Allan");
+  addMember(2, "Bob");
+
+  displayBooks();
+  displayMembers();
+
+  removeBook(1988);
+  displayBooks();
+
+  return 0;
+}
+
+or
+
+#include <iostream>
+#include <string>
+
+// Namespace for Book Manager
+namespace Bookmanager {
+    const int MAX_BOOKS = 100;
+    std::string books[MAX_BOOKS];
+    int bookCount = 0;
+
+    void addBook(const std::string& title) {
+        if (bookCount < MAX_BOOKS) {
+            books[bookCount++] = title;
+            std::cout << "Book Added: " << title << std::endl;
+        } else {
+            std::cerr << "Error: Maximum books limit reached." << std::endl;
+        }
+    }
+
+    void removeBook(const std::string& title) {
+        for (int i = 0; i < bookCount; ++i) {
+            if (books[i] == title) {
+                std::cout << "Book Removed: " << title << std::endl;
+                // Shift elements to fill the gap
+                for (int j = i; j < bookCount - 1; ++j) {
+                    books[j] = books[j + 1];
+                }
+                --bookCount;
+                return;
+            }
+        }
+        std::cerr << "Error: Book not found." << std::endl;
+    }
+
+    void displayBooks() {
+        std::cout << "Display Books in Library:" << std::endl;
+        for (int i = 0; i < bookCount; ++i) {
+            std::cout << books[i] << std::endl;
+        }
+    }
+}
+
+// Namespace for Member Manager
+namespace Membermanager {
+    const int MAX_MEMBERS = 100;
+    std::string members[MAX_MEMBERS];
+    int memberCount = 0;
+
+    void addMember(const std::string& name) {
+        if (memberCount < MAX_MEMBERS) {
+            members[memberCount++] = name;
+            std::cout << "Member Added: " << name << std::endl;
+        } else {
+            std::cerr << "Error: Maximum members limit reached." << std::endl;
+        }
+    }
+
+    void displayMembers() {
+        std::cout << "Display Members:" << std::endl;
+        for (int i = 0; i < memberCount; ++i) {
+            std::cout << members[i] << std::endl;
+        }
+    }
+}
+
+int main() {
+    using namespace Bookmanager;
+    using namespace Membermanager;
+
+    // Adding books
+    addBook("1988 by Chetan Bhagat");
+    addBook("C by Balaguruswamy");
+
+    // Adding members
+    addMember("Allan");
+    addMember("Bob");
+
+    // Displaying books
+    displayBooks();
+
+    // Displaying members
+    displayMembers();
+
+    // Removing a book
+    removeBook("1988 by Chetan Bhagat");
+
+    // Displaying books again
+    displayBooks();
+
+    return 0;
+}
+
