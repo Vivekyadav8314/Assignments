@@ -1,0 +1,562 @@
+1. Explain OOP concepts with an example
+Ans:-Class: Think of a blueprint or a recipe for building something. For example, a "Car Blueprint" defines what a car should have: wheels, engine, doors, etc.
+
+Object: An object is an actual instance created based on the class blueprint. So, a specific car like a "Toyota Camry" is an object created from the "Car Blueprint".
+
+*Encapsulatio:
+Encapsulation is like a gift box that hides the inner workings of a present. It bundles data (attributes) and methods (functions) together inside the class.
+For instance, a car's engine is encapsulated — you don't need to know how the engine works to drive the car. You just use the accelerator (method) to make the car go faster.
+
+*Inheritance:
+Inheritance is akin to passing traits or properties from parents to children. In the real world, children inherit traits like eye color or hair type from their parents.
+For example, a "Luxury Car" class can inherit features (attributes and methods) from a more general "Car" class, adding extra features like leather seats or advanced navigation.
+
+=>In inheritance two Class are:
+1. Base Class- It is also called a Parent class and Super class.
+2. Derived Class-This is derived from Base class.
+
+=>Types Of Inheritance
+1.Single inheritance
+2.Multiple inheritance
+3.Hierarchical inheritance
+4.Multilevel inheritance
+5.Hybrid inheritance
+
+
+*Polymorphism:
+Polymorphism means "many forms". It allows objects of different types to be treated as objects of a common base type.
+Think of a "Vehicle" class with a method called drive(). A car, a bicycle, and a truck can all have their own unique drive() method, but you can call drive() on any vehicle and it behaves differently based on the specific type of vehicle.
+
+
+
+
+2. Write any 5 differences between C and C++.
+Ans.Here are five key differences between C and C++:
+1.Programming Paradigm:
+=>C: C is a procedural programming language, which means it focuses on functions or procedures that operate on data.
+=>C++: C++ supports both procedural and object-oriented programming paradigms. It extends C by adding classes and objects, allowing for better organization and reusability of code.
+
+2.Standard Input/Output:
+=>C: In C, input and output operations are performed using functions like printf and scanf.
+=>C++: C++ uses stream-based input/output (iostream library), where input is read from cin and output is written to cout. It provides a more flexible and type-safe approach compared to C's printf and scanf.
+
+3.Memory Management:
+=>C: Memory management in C is done using functions like malloc, calloc, realloc, and free from the <stdlib.h> library.
+=>C++: C++ supports these C functions but also introduces new and delete operators for dynamic memory allocation and deallocation. Additionally, C++ provides smart pointers (std::unique_ptr, std::shared_ptr, std::weak_ptr) for safer and automated memory management.
+
+4.Function Overloading:
+=>C: C does not support function overloading, meaning you cannot have multiple functions with the same name but different parameter types or numbers.
+=>C++: C++ supports function overloading, allowing you to define multiple functions with the same name but different parameters. This promotes code readability and reusability.
+
+5.Namespace Support:
+=>C: C does not support namespaces. All global identifiers must have unique names across the entire program.
+=>C++: C++ introduces namespaces (namespace keyword), which help organize code into logical groups and prevent name conflicts. Namespaces are particularly useful when integrating multiple libraries or modules into a single program.
+
+
+
+
+3. Explain iostream, istream, ostream, cout, cin and endl
+Ans.- iostream is the library that enables input/output operations.
+
+- ostream is the output stream that carries data from your program to the outside world.
+
+- cout is the tap that sends data to the screen.
+
+- cin is the pipe that reads data from the keyboard.
+
+- endl is the "enter" key that moves to a new line and forces the output to appear immediately.
+
+
+
+4.Write a C++ program to check whether a given number is prime or not
+Ans.
+#include <iostream>  
+using namespace std;  
+int main()  
+{  
+  int n, i, m=0, flag=0;  
+  cout << "Enter the Number to check Prime: ";  
+  cin >> n;  
+  m=n/2;  
+  for(i = 2; i <= m; i++)  
+  {  
+      if(n % i == 0)  
+      {  
+          cout<<"Number is not Prime."<<endl;  
+          flag=1;  
+          break;  
+      }  
+  }  
+  if (flag==0)  
+      cout << "Number is Prime."<<endl;  
+  return 0;  
+}  
+Output:
+
+Enter the Number to check Prime: 17  
+ Number is Prime.   
+Enter the Number to check Prime: 57  
+Number is not Prime.
+
+
+Q1.Write a note on C++ Dynamic Memory Allocation. Write a C++ program to illustrate new and delete operators.
+Ans:-#include <iostream>
+
+using namespace std;
+
+int main() {
+  // Allocate memory for an integer
+  int* ptr = new int;
+
+  // Use the allocated memory
+  *ptr = 10;
+  cout << "Value: " << *ptr << endl;
+
+  // Free up the memory
+  delete ptr;
+
+  return 0;
+}
+Output:-
+Value: 10
+
+
+2. Write a C++ program to illustrate single level, multilevel, multiple, hierarchical and hybrid inheritance.
+Ans:-A)Single Level
+#include <iostream>
+
+using namespace std;
+
+// Base class: Space
+class Space 
+{
+    public:void orbit() 
+    {
+        cout << "Orbiting in space..." << endl;
+    }
+};
+
+// Single Level Inheritance: Planet inherits from Space
+class Planet : public Space
+{
+    public:void rotate() 
+    {
+        cout << "Rotating on its axis..." << endl;
+    }
+};
+int main() 
+{
+    Planet earth;
+    earth.orbit();
+    earth.rotate();
+    
+    return 0;
+}
+Output:-
+Orbiting in space...
+Rotating on its axis...
+
+B)Multilevel:
+#include <iostream>
+using namespace std;
+
+// Base class: Space
+class Space 
+{
+    public:void orbit() 
+    {
+        cout << "The area directly outside of Earth's atmosphere." << endl;
+    }
+};
+
+// Intermediate class: Planet inherits from Space
+class Planet : public Space 
+{
+    public:void rotate() 
+    {
+        cout << "A planet is a celestial body that is in orbit around the Sun " << endl;
+    }
+};
+
+// Derived class: Earth inherits from Planet
+class Earth : public Planet 
+{
+    public:void supportLife() 
+    {
+        cout << "Earth is the third planet from the Sun and the only astronomical object known to harbor life." << endl;
+    }
+};
+
+int main() 
+{
+    Earth earth;
+    earth.orbit(); // Inherited from SpaceObject
+    earth.rotate(); // Inherited from Planet
+    earth.supportLife(); // Own method
+
+    return 0;
+}
+Output:-
+The area directly outside of Earth's atmosphere.
+A planet is a celestial body that is in orbit around the Sun 
+Earth is the third planet from the Sun and the only astronomical object known to harbor life.
+
+C)Multiple:-
+#include <iostream>
+
+using namespace std;
+
+// Base class: Space
+class Space 
+{
+    public:void orbit() 
+    {
+        cout << "The area directly outside of Earth's atmosphere." << endl;
+    }
+};
+
+// Base class: Astronaut
+class Astronaut 
+{
+    public:void spacewalk() 
+    {
+        cout << "An astronaut is someone who travels in space. " << endl;
+    }
+};
+
+// Derived class: SpaceSuit inherits from Space and Astronaut
+class SpaceSuit : public Space, public Astronaut 
+{
+    public:void protect() 
+    {
+        cout << "Protecting the astronaut." << endl;
+    }
+};
+
+int main() 
+{
+    SpaceSuit spaceSuit;
+    spaceSuit.orbit(); // Inherited from Space
+    spaceSuit.spacewalk(); // Inherited from Astronaut
+    spaceSuit.protect(); // Own method
+
+    return 0;
+}
+Output:-
+The area directly outside of Earth's atmosphere.
+An astronaut is someone who travels in space. 
+Protecting the astronaut.
+
+D)Hierarchical:-
+#include <iostream>
+
+using namespace std;
+
+// Base class: Space
+class Space 
+{
+    public:void orbit() 
+    {
+        cout << "Orbiting in space..." << endl;
+    }
+};
+
+// Intermediate class: Planet inherits from Space
+class Planet : public Space 
+{
+    public:void rotate() 
+    {
+        cout << "Rotating on its axis..." << endl;
+    }
+};
+
+// Derived class: Earth inherits from Planet
+class Earth : public Planet 
+{
+    public:void supportLife() 
+    {
+        cout << "Supporting life..." << endl;
+    }
+};
+// Derived class: Moon inherits from Planet
+class Moon : public Planet {
+public:
+    void eclipse() {
+        cout << "Eclipsing the sun..." << endl;
+    }
+};
+
+int main() {
+    Earth earth;
+    earth.orbit(); // Inherited from SpaceObject
+    earth.rotate(); // Inherited from Planet
+    earth.supportLife(); // Own method
+
+    Moon moon;
+    moon.orbit(); // Inherited from SpaceObject
+    moon.rotate(); // Inherited from Planet
+    moon.eclipse(); // Own method
+
+    return 0;
+}
+Output:-
+Supporting life...
+Orbiting in space...
+Rotating on its axis...
+Eclipsing the sun...
+
+E)Hybrid:-
+#include <iostream>
+
+using namespace std;
+
+// Base class: Space
+class Space
+{
+    public:void orbit() 
+    {
+        cout << "Orbiting in space..." << endl;
+    }
+};
+
+// Base class: Astronaut
+class Astronaut 
+{
+    public:void spacewalk() 
+    {
+        cout << "Performing a spacewalk..." << endl;
+    }
+};
+
+// Intermediate class: SpaceStation inherits from Space
+class SpaceStation : public Space
+{
+    public:void dock() 
+    {
+        cout << "Docking at the space station..." << endl;
+    }
+};
+// Derived class: SpaceShuttle inherits from SpaceStation and Astronaut
+class SpaceShuttle : public SpaceStation, public Astronaut 
+{
+    public:void launch() 
+    {
+        cout << "Launching into space..." << endl;
+    }
+};
+
+int main() 
+{
+    SpaceShuttle spaceShuttle;
+    spaceShuttle.orbit(); // Inherited from SpaceObject
+    spaceShuttle.dock(); // Inherited from SpaceStation
+    spaceShuttle.spacewalk(); // Inherited from Astronaut
+    spaceShuttle.launch(); // Own method
+
+    return 0;
+}
+Output:-
+Orbiting in space...
+Docking at the space station...
+Performing a spacewalk...
+Launching into space...
+
+
+3. Write a C++ program to illustrate shallow and deep copy.
+Ans:-#include <iostream>
+
+using namespace std;
+
+class MyClass {
+public:
+    int* ptr;
+    MyClass() {
+        ptr = new int;
+    }
+    ~MyClass() {
+        delete ptr;
+    }
+};
+
+// Shallow Copy
+MyClass shallowCopy(MyClass source) {
+    MyClass copy;
+    copy.ptr = source.ptr; // Shallow copy, copying pointer only
+    return copy;
+}
+
+// Deep Copy
+MyClass deepCopy(MyClass source) {
+    MyClass copy;
+    copy.ptr = new int; // Deep copy, allocating new memory
+    *copy.ptr = *source.ptr; // Copying the value
+    return copy;
+    
+}
+
+int main() {
+    MyClass original;
+    *original.ptr = 10;
+
+    // Shallow Copy
+    MyClass shallow = shallowCopy(original);
+    *shallow.ptr = 20; // Changes the original value
+
+    // Deep Copy
+    MyClass deep = deepCopy(original);
+    *deep.ptr = 30; // Does not change the original value
+
+    cout << "Original: " << *original.ptr << endl;
+    cout << "Shallow: " << *shallow.ptr << endl;
+    cout << "Deep: " << *deep.ptr << endl;
+
+    return 0;
+}
+Output:-
+Original: 20
+Shallow: 20
+Deep: 30
+
+
+
+1. Write a C++ program to print the thread_id.
+Ans.
+#include <iostream>
+#include <thread>
+using namespace std;
+
+int main() 
+{
+  thread::id thread_id = this_thread::get_id();
+  cout << "Thread ID: " << thread_id << endl;
+  return 0;
+}
+Output:
+Thread ID: 139952115816256
+
+
+
+2.Write a C++ program to create 2 threads and make the thread to run parallel
+Ans.#include <iostream>
+#include <thread>
+
+// Function to be executed by threads
+void threadFunction(int threadId) {
+    std::cout << "Thread " << threadId << " is running." << std::endl;
+}
+
+int main() {
+    // Creating two threads
+    std::thread t1(threadFunction, 1);
+    std::thread t2(threadFunction, 2);
+
+    // Joining threads with the main thread
+    t1.join();
+    t2.join();
+
+    std::cout << "Threads have completed their execution." << std::endl;
+
+    return 0;
+}
+Output:-
+Thread 1 is running.
+Thread 2 is running.
+Threads have completed their execution.
+
+
+3.Write a C++ program to illustrate thread and passing the arguments to the function
+Ans.
+#include <iostream>
+#include <thread>
+#include <string>
+
+// Function to be executed by threads
+void printMessage(const std::string& message, int threadId) {
+    std::cout << "Thread " << threadId << " says: " << message << std::endl;
+}
+
+int main() {
+    // Define messages for threads
+    std::string message1 = "Hello from Thread 1!";
+    std::string message2 = "Hello from Thread 2!";
+
+    // Create threads and pass arguments
+    std::thread t1(printMessage, message1, 1);
+    std::thread t2(printMessage, message2, 2);
+
+    // Join threads with the main thread
+    t1.join();
+    t2.join();
+
+    std::cout << "Threads have completed their execution." << std::endl;
+
+    return 0;
+}
+Output:-Thread 1 says: Hello from Thread 1!
+Thread 2 says: Hello from Thread 2!
+Threads have completed their execution.
+
+
+4.Write a C++ program to illustrate RACE CONDITION AND MUTEX.
+Ans.#include <iostream>
+#include <thread>
+#include <mutex>
+
+std::mutex mtx; // mutex for critical section
+int counter = 0; // shared resource
+
+void increment() {
+  for (int i = 0; i < 10000; i++) {
+    mtx.lock(); // acquire mutex
+    counter++;
+    mtx.unlock(); // release mutex
+  }
+}
+
+int main() {
+  std::thread t1(increment);
+  std::thread t2(increment);
+
+  t1.join();
+  t2.join();
+
+  std::cout << "Final counter value: " << counter << std::endl;
+
+  return 0;
+}
+Output:-Final counter value: 20000
+
+
+5. Write a note on lock_guard and unique_lock.
+Ans.Lock Guard
+
+-> lock_guard is a class in the C++ Standard Library that provides a simple way to manage mutexes.
+-> It is a wrapper around a mutex that automatically locks the mutex when the lock_guard object is created and unlocks it when the object is destroyed.
+-> This ensures that the mutex is always released, even if an exception is thrown.
+-> lock_guard is a convenient and safe way to lock a mutex for a short period of time.
+
+Example:
+
+std::mutex mtx;
+void foo() {
+  std::lock_guard<std::mutex> lock(mtx);
+  // critical section
+}
+
+Unique Lock
+
+-> unique_lock is a class in the C++ Standard Library that provides a more flexible way to manage mutexes.
+-> It is similar to lock_guard, but it allows for more control over the locking and unlocking of the mutex.
+-> unique_lock can be used to lock a mutex for a longer period of time, and it can also be used to lock multiple mutexes at the same time.
+-> unique_lock is more versatile than lock_guard, but it requires more manual management.
+
+Example:
+
+std::mutex mtx;
+void foo() {
+  std::unique_lock<std::mutex> lock(mtx);
+  // critical section
+  lock.unlock(); // manually unlock the mutex
+}
+
+
