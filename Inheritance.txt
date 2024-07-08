@@ -1,0 +1,126 @@
+Inheritance:-
+Inheritance is the process by which objects of one class acquire the properties of objects of another class in the hierarchy. 
+
+When one object acquires all the properties and behaviours of parent object i.e. known as inheritance.
+
+In inheritance two Class are:
+1. Base Class- It is also called a Parent class and Super class.
+2. Derived Class-This is derived from Base class.
+
+Types Of Inheritance
+1.Single inheritance
+2.Multiple inheritance
+3.Hierarchical inheritance
+4.Multilevel inheritance
+5.Hybrid inheritance
+
+1.Single inheritance:-When one class inherits another class, it is known as single inheritance.
+
+[A] ------> [B]  // 'A' is the base class/Parent/Super class, and 'B' is the Child/sub/ derived class.
+
+Example
+[Vehicle]------>[Car] //Here, 'Vehicle' is the base class/Parent/Super class, and 'Car' is the Child/sub/ derived class.
+
+2.Multilevel Inheritance:-IN this one class inherits another class which is further inherited by another class.
+
+[A]---->[B]----->[C]//Here, class B inherits from class A, and class C inherits from class
+
+ 'A' is the Base Class, 'B' is a Derived Class of 'A' and 'C' is Derived Class of 'B'
+We can also say that A is a Super Class , 'B' is a sub class/ Intermediate base class and 'C' is a Derived Class.
+
+Example:-
+[Vehicle]---->[Car]---->[Tata Curve] //
+ 'Vehicle' is the Base Class, 'Car' is a Derived Class of 'Vehicle' and 'Tata Curve' is Derived Class of 'Car'
+
+3.Multiple inheritance:-Multiple inheritance is the process of deriving a new class that inherits the attributes from two or more classes.
+
+[A]     [B]  …..[N]
+ |       |       |
+ \       |       /
+  \      |      /
+   \     |     /
+    \    |    /
+     \   |   /
+      \  |  /
+       \ | /
+[C (Derived Class)]
+
+Here 'A', 'B',...'N' is the Base Class and 'C' is the Derived Class. 'C' is derived from 'A', 'B' ….'N'.
+
+Example:-
+[Area]     [Perimeter]
+ |            |
+ \           /
+  \         /
+   \       /
+    \     /
+     \   /
+  [Rectangle]
+ 'Area' and 'Perimeter' is a Base class and Rectangle is Derived Class.
+
+
+4.Hierarchical inheritance:-Hierarchical inheritance is defined as the process of deriving more than one class from a base class.
+
+It just opposite to the Multiple Inheritance.
+
+                [A]
+               / | \
+              /  |  \
+             /   |   \
+            /    |    \
+           /     |     \
+         [B]    [C]   [D]
+
+Here, 'A' is the Base Class and 'B', 'C' and 'D' is Derived class which is derived from Base Class 'A'.
+
+Example:-
+               [Shape]
+               /  |  \
+              /   |   \
+             /    |    \
+            /     |     \
+           /      |      \
+          /       |       \  
+         /        |        \
+        /         |         \
+       /          |          \
+[Rectangle]   [Triangle]    [Circle] 
+Here, 'Shape' is the Base Class and 'Rectangle', 'Triangle' and 'Circle' is Derived class which is derived from Base Class 'Shape'.
+
+
+
+5.Hybrid inheritance:-Hybrid inheritance is a combination of more than one type of inheritance (Hierarchical inheritance, Multiple inheritance).
+
+                [A]
+               /   \
+              /     \
+             /       \
+            /         \  
+           [B]        [C]
+           \           /
+            \         /
+             \       /
+              \     /
+               \   /
+               [ D ]
+       
+Here, 'A' is a Base Class, 'B' and 'C' is derived Class which is derived from 'A' Base Class. And For 'D' is also a Derived class, 'B' and 'C' is Base Class for 'D'.
+
+Example:-
+
+               [Human Body]
+                   /  \
+                  /    \
+                 /      \
+                /        \
+            [Male]    [Female]
+                \        /
+                 \      /
+                  \    /
+                   \  /
+                 [Child]
+
+
+Here Human  Body is a Base Class for Male and Female and Male Female is Derived Class for, And Male and Female is also a Base class for Child class is Derived from Male and Female.
+
+ 
