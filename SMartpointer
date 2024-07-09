@@ -48,6 +48,14 @@ void set_value(SmartPointer *sp, int value)
 Takes a pointer to a SmartPointer structure and an integer value
 If sp->ptr is not NULL, it sets the value pointed to by so->ptr to value
 */
+int get_value(SmartPointer sp)
+{
+        if(sp.ptr!=NULL)
+        {
+                return *(sp.ptr);
+        }
+        return 0; //Default value is 0 iff pointer is NULL
+}
 
 int main()
 {
