@@ -1,0 +1,63 @@
+1.Create a two directory nginx and tomcat y using command mkdir
+2.Enter in directory nginx by using command cd nginx
+3.ls
+4.nano Dockerfile
+    from ubuntu:20.04
+    RUN apt update && apt install -y net-tools iputils-ping jq nginx
+    COPY index.html /var/www/html/index.nginx-debian.html
+    ADD style.css /var/www/html
+    CMD ["nginx", "-g", "daemon off;"]
+  Press- Ctrl+O ENter and again press Ctrl + X
+5.ls
+6.nano index.html
+7.nano style.css
+8. ls
+9. docker build -t wipro:v1 .
+10. docker run --rm -dit --name wipro --publish 9000:80 wipro:v1
+11. docker ps
+12. copy the public IP address from virtual machine 
+13. past the Public IP address with port in browser
+remove the wipro container
+14. docker stop wipro
+15. docker rmi wipro:v1
+16. cd ..
+17. Enter in directory tomcat by using command cd tomcat
+18. ls
+19. for tomcat we install - apt install -y openjdk-8-jdk
+20. java -version
+21.cd eb-tomcat-snakes
+22. ls
+23. mv * /home/azureuser/tomcat/
+24. ls
+25. cd ..
+26. rm -rf eb-tomcat-snakes/
+27. ls
+28. ./build.sh(Create a ROOT.war)
+29. nano Dockerfile
+   from tomcat:8.0
+   label "Owner"="TOMCAT"
+   ADD ROOT.war /usr/local/tomcat/webapps
+   CMD ["cataline.sh", "run]
+30. docker build -t tomcat:v1 .
+31. docker run --rm -dit --name tomcat --public 9001:8080 tomcat:v1
+32. docker ps -a
+33. docker stop tomcat
+34. docker rmi tomcat:v1
+35. cd ..
+36. ls
+37. nano compose.yaml
+   services:
+        nginx:
+          build:
+        context:  ./nginx
+       ports:
+          - "9000:80"
+        
+          tomcat:
+            build:
+               context:  ./tomcat
+            ports:
+              - "9001:8080"
+38. ls
+39. docker compose up
+40. Copy the public IP address with port and past on browser 
