@@ -1,4 +1,5 @@
-Inheritance:-
+*Inheritance:-
+
 Inheritance is the process by which objects of one class acquire the properties of objects of another class in the hierarchy. 
 
 When one object acquires all the properties and behaviours of parent object i.e. known as inheritance.
