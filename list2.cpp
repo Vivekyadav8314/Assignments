@@ -1,0 +1,62 @@
+/*
+#include<iostream>
+#include<list>
+using namespace std;
+
+int main()
+{
+
+        //Creat the list
+        list<int>numbers={1, 2, 3};
+
+        cout<<"List elements are..."<<endl;
+        for(int i:numbers)
+        {
+                cout<<i<<" ";
+        }
+
+        cout<<endl;
+
+	numbers.push_front(99);
+	numbers.push_back(88);
+
+	cout<<"Modified list elements are.."<endl;
+	for(int i:numbers)
+	{
+		cout<<i<<" ";
+	}
+	cout<<endl;
+
+
+        return 0;
+}
+*/
+#include<iostream>
+#include<list>
+using namespace std;
+
+int main()
+{
+        list<int>numbers={1,2,3};
+
+        cout<<"List elements are..."<<endl;
+        for(int i:numbers)
+        {
+                cout<<i<<" ";
+        }
+        cout<<endl;
+
+        numbers.push_front(99);
+
+        numbers.push_back(88);
+
+        cout<<"Modified list elements are..."<<endl;
+        for(int i:numbers)
+        {
+                cout<<i<<" ";
+        }
+        cout<<endl;
+
+        return 0;
+}
+
