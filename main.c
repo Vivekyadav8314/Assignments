@@ -1,14 +1,14 @@
 #include<stdio.h>
+#include"vivek.h" // User define header file
 
-extern int globalvariable;
-
-extern void externalfunction();
 int main()
 {
-        printf("Value of the global variable : %d\n", globalvariable);
+	 printf("Inside main function\n");
+	 printf("Calling hello function\n");
+	 hello();
+	 printf("Calling add function\n");
+	 add(3,5);
+	 printf("Back in main function\n");
 
-	externalfunction();
-
-	return 0;
+	 return 0;
 }
-
