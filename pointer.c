@@ -1,25 +1,27 @@
+// C program to demonstrate the use of pointers
+
 #include<stdio.h>
 
 int main()
-
-
-
 {
-	int a=10;
-	
-	//Pointer Declaration
-	int *ptr;// * is Dereferencing operator. ptr is an integer pointer
-		 
-	//pointer Initialization
-	ptr=&a;
+	int num=10;
+	int *ptr=&num; //Pointer declaration and initialization
 
-	printf("Value of a without using the pointer is %d\n",a);
-	printf("Value of a with using a pointer is %d\n",*ptr);
+	printf("Value of s=%d\n",num);
+	printf("Address of a=%p\n",&num);
 
-	printf("Address of a without  uing the pointer is %p\n", &a);
-	printf("Address of a without  uing the pointer is %p\n", &a);
+	printf("Using pointer Value of a -%d\n", *ptr);
+	printf("Using pointer, Address of a= %p\n",ptr);
+	printf("Address of ptr =%p\n",&ptr);
 
-	printf("Addes if integer ptr is %p\n",&ptr);
+	num=20;
+
+	printf("Modified value of a =%d\n",num);
+	printf("Address of a=%p\n",&num);
+
+	printf("Using pointer value of a=%d\n",*ptr);
+	printf("Using pointer, Address of a=%p\n",ptr);
+	printf("Address of ptr=%p\n",&ptr);
 
 	return 0;
 }
