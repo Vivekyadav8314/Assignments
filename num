@@ -1,0 +1,28 @@
+#!/bin/bash
+
+echo "Enter a number between 1 and 3:"
+read number
+
+case $number in
+    1)
+        echo "Selected option 1."
+        xdg-open data.txt
+	;;
+    2)
+        echo "Selected option 2."
+	   echo "Enter a directory:"
+        read directory
+        if [ -d "$Assignment" ]; then
+            echo "Contents of directory $Assignment:"
+            ls -l "$Assignment"
+        else
+            echo "Directory does not exist."
+        fi
+        ;;
+    3)
+        echo "Selected option 3."
+        ;;
+    *)
+        echo "Invalid option."
+        ;;
+esac

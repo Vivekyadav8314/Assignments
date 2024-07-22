@@ -1,0 +1,9 @@
+#!/bin/bash
+def count_lines(filename):
+    with open(filename, 'r') as file:
+     lines = file.readlines()
+     print("Number of lines in", filename, ":" len(lines))
+
+     if _name_ =="_main_":
+     count_lines("program.txt")
+     count_lines("program2.txt")

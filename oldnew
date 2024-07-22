@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+echo "Usage: $0 input_file output_file"
+exit 1
+
+fi
+
+sed 's/old_text/new_text/g' "$1" > "$2"
+
+echo "Text replacemdent complete. Output written to $2

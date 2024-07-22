@@ -1,0 +1,18 @@
+#!/bin/bash
+
+count_lines()
+{
+  filename="$1"
+  lines=$(wc =l < "$SDLCAssignmentnew")
+  echo "Number of line in $SDLCAssignmentnew: $lines"
+}
+ if[ $# -eq 0]; then
+ echo"Usage: $0 <filename1> <filename2>..."
+ exit 1
+
+fi
+
+ for filename in "$@"; 
+ do
+  count_line"$SDLCAssignmentnew"
+done

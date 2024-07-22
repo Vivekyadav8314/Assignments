@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#Change group permissoons to RWX for files string with 'T'
+for file in T*;
+do 
+  if [ -f "$file" ]; then
+   chmod g+rwx "$file"
+    echo "Changed group permission to RWX for fike: $file"
+ fi
+done

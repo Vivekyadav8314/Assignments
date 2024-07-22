@@ -1,0 +1,18 @@
+#!/bin/bash
+send_email()
+{
+
+ local recipient = "$1"
+ local subject = "$2"
+ local message = "$3"
+
+ echo "$message" | mail -s "$subject" "$recipient"
+
+}
+
+
+read -p "Recipient Email Address: " recipient
+read -p "Subject: " subject
+read -p "message:" message
+
+send_email "$recipient" "$subject" "$message"

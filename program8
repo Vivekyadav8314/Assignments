@@ -1,0 +1,4 @@
+rps@rps-virtual-machine:~/Desktop/Assignment$ ./program7
+./program7: line 9: syntax error near unexpected token `then'
+./program7: line 9: ` if[ $# -eq 0]; then'
+

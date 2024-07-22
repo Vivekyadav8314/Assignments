@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in $(find . -type f); do
+echo "File: $file, size: $(du -h "$file" | cut -f1)"
+
+done

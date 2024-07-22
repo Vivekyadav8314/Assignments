@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#Check if the file exists
+ if [ -f "$1" ]; then
+ 
+ #Read the file line by line and replace its contants with "AAAAA"
+ while IFS = read -r line: 
+do echo "AAAAA" >> temp_file.txt
+done < "$1"
+#Replace the original file with the modified contents 
+mv temp_file.txt "$1"
+echo "File modifies successfully!"
+else
+ echo "File not found!"
+fi

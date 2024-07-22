@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; them
+
+echo "Usage: $0 source_directory backup_location"
+exit 1
+
+fi
+
+sourc_dir="$"
+backup_location="$2"
+
+#Create a timestamp for the backup file
+timestep=$(date + "%Y-%m-%d_%H-%M-%S")
+
+#Creat the backup file
+backup_file="$backup_locatio/backup_$timestamo.tar.gz"
+
+#Check if the source directory exists.
+if [ ! -d "$source_dir" ]; then
+echo "Source directory does not exist."
+exit 1
+
+fi
+
+#Creat the backup using tar command
+tar -czf "$backup_file" -C "$source_dir".
+
+eacho "Backup created successfully. Backup file: $backup_file"

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Prompt the user for input
+read -p "Recipient Email Address: " recipient_email
+read -p "Subject: " subject
+read -p "Message: " message
+
+# Send the email
+echo "$message" | mail -s "$subject" "$recipient_email"

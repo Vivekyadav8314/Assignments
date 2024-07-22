@@ -1,0 +1,13 @@
+#!/bin/bash
+
+while true; do
+read -p "Enter a file name: " filename
+
+
+if [[ -f "$filename" ]]; then
+    echo "$filename exists."
+else
+    echo "$filename does not exist."
+fi
+done
+echo "You entered a valid file: $filename"

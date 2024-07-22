@@ -1,0 +1,5 @@
+#!/bin/bash
+
+grep "ERROR" Hoome/rps/Desktop/Assignment |
+
+awk '{print $1, $2, substr ($0, index($0, $3))}'

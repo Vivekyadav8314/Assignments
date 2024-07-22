@@ -1,0 +1,28 @@
+#!/bin/bash
+# Check if the urls.txt file exists 
+if [ ! -f "urls.txt" ] ; then
+exho "Error: File urls.txt not found."
+exit 1
+
+#Loop through each URL in the file
+while read -r url; do
+ #Extract filename fro URL
+ filename=$(basename "$url")
+
+#Check if the file already exists 
+if [ -f "$filename" ]; then
+echo "skipping $filename as it already exists."
+else
+#Downlode the file using wger or curl
+if command -v wget &>/dev/null; then
+wget "$url"
+elif command -v curl &>/dev/null; then
+curl -0 "$url"
+
+else 
+  echo "Error:Neither weget nor curl found. Unable to downlode $filename."
+ fi
+fi
+done <urls.txt
+
+echo "Download complete." 

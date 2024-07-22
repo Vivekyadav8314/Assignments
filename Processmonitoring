@@ -1,0 +1,15 @@
+#!/bin/bash
+
+process_name= "XYZ"
+
+while true; do
+
+if ps -C "$process_name"> /dev/null 2>&1; then
+echo "Process'$process_name' is running."
+
+else
+echo "** WARNING: Process '$process_name' is not running!**"
+
+fi
+sleep 2
+done

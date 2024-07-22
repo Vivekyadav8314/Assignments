@@ -1,0 +1,11 @@
+#!/bin/bash
+
+def print_num_lines(file):
+ with open (file, 'r') as file:
+ line = file.readlines()
+printf(f"Number of lines in {file}:{len(lines)}")
+
+
+print_num_lines("file1.txt")
+print_num_lines("file2.txt")
+printf_num_lines(file3.txt")
