@@ -1,0 +1,534 @@
+1.PC 0
+COnfig
+⦁	Default Gateway- 192.168.1.1
+⦁	Go in FastEthernet0   IPv4- 192.168.1.10 , Subnet Mask 255.255.255.0
+⦁	Desktop
+⦁	C:\>ping 192.168.1.1
+⦁	
+⦁	Pinging 192.168.1.1 with 32 bytes of data:
+⦁	
+⦁	Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+⦁	Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+⦁	Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+⦁	Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+⦁	
+⦁	Ping statistics for 192.168.1.1:
+⦁	    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+⦁	Approximate round trip times in milli-seconds:
+⦁	    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+⦁	
+⦁	C:\>ipconfig
+⦁	
+⦁	FastEthernet0 Connection:(default port)
+⦁	
+⦁	   Connection-specific DNS Suffix..: 
+⦁	   Link-local IPv6 Address.........: FE80::290:21FF:FE1C:7BB3
+⦁	   IPv6 Address....................: ::
+⦁	   IPv4 Address....................: 192.168.1.10
+⦁	   Subnet Mask.....................: 255.255.255.0
+⦁	   Default Gateway.................: ::
+⦁	                                     0.0.0.0
+⦁	
+⦁	Bluetooth Connection:
+⦁	
+⦁	   Connection-specific DNS Suffix..: 
+⦁	   Link-local IPv6 Address.........: ::
+⦁	   IPv6 Address....................: ::
+⦁	   IPv4 Address....................: 0.0.0.0
+⦁	   Subnet Mask.....................: 0.0.0.0
+⦁	   Default Gateway.................: ::
+⦁	                                     0.0.0.0
+⦁	
+⦁	C:\>ping 192.168.4.10
+⦁	
+⦁	Pinging 192.168.4.10 with 32 bytes of data:
+⦁	
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	
+⦁	Ping statistics for 192.168.4.10:
+⦁	    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+⦁	
+⦁	C:\>ping 192.168.4.10
+⦁	
+⦁	Pinging 192.168.4.10 with 32 bytes of data:
+⦁	
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	
+⦁	Ping statistics for 192.168.4.10:
+⦁	    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+⦁	
+⦁	C:\>ping 192.168.4.10
+⦁	
+⦁	Pinging 192.168.4.10 with 32 bytes of data:
+⦁	
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Request timed out.
+⦁	Reply from 192.168.4.10: bytes=32 time<1ms TTL=125
+⦁	
+⦁	Ping statistics for 192.168.4.10:
+⦁	    Packets: Sent = 4, Received = 1, Lost = 3 (75% loss),
+⦁	Approximate round trip times in milli-seconds:
+⦁	    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+⦁	
+⦁	C:\>ping 192.168.4.10
+⦁	
+⦁	Pinging 192.168.4.10 with 32 bytes of data:
+⦁	
+⦁	Reply from 192.168.4.10: bytes=32 time<1ms TTL=125
+⦁	Reply from 192.168.4.10: bytes=32 time<1ms TTL=125
+⦁	Reply from 192.168.4.10: bytes=32 time<1ms TTL=125
+⦁	Reply from 192.168.4.10: bytes=32 time<1ms TTL=125
+⦁	
+⦁	Ping statistics for 192.168.4.10:
+⦁	    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+⦁	Approximate round trip times in milli-seconds:
+⦁	    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+⦁	
+⦁	C:\>
+2.Switch 0
+3.Router 0
+Would you like to enter the initial configuration dialog? [yes/no]: no
+
+
+Press RETURN to get started!
+
+
+
+Router>
+Router>en
+Router>enable 
+Router#exit
+
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+
+
+
+
+Press RETURN to get started.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Router>
+Router>
+Router>
+Router>conf t
+Router>conf t
+            ^
+% Invalid input detected at '^' marker.
+	
+Router>conf t
+            ^
+% Invalid input detected at '^' marker.
+	
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#inter
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/0
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.1.1 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#exit
+Router(config)#inte
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/1
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.2.2 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#do write
+Building configuration...
+[OK]
+Router(config-if)#
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+
+
+
+
+Press RETURN to get started.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Router>
+Router>
+Router>
+Router>
+Router>en
+Router#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+C    192.168.1.0/24 is directly connected, FastEthernet0/0
+C    192.168.2.0/24 is directly connected, FastEthernet0/1
+
+Router#
+Router#conf t
+Router#conf terminal 
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#ip route 192.168.4.0 255.255.255.0 192.168.2.3
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#
+Router#
+Router#
+Router#
+Router#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+C    192.168.1.0/24 is directly connected, FastEthernet0/0
+C    192.168.2.0/24 is directly connected, FastEthernet0/1
+S    192.168.4.0/24 [1/0] via 192.168.2.3
+
+Router#
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+
+
+
+
+Press RETURN to get started.
+
+
+4.Router 1
+Would you like to enter the initial configuration dialog? [yes/no]: no
+
+
+Press RETURN to get started!
+
+
+
+Router>
+Router>
+Router>en
+Router>enable 
+Router#conf t
+Router#conf terminal 
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#inter
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/1
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.2.3 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#exit
+Router(config)#inte
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/0
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.3.2 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#do write
+Building configuration...
+[OK]
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up
+
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+
+
+
+
+Press RETURN to get started.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Router>
+Router>
+Router>
+Router>
+Router>en 
+Router#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+C    192.168.2.0/24 is directly connected, FastEthernet0/1
+C    192.168.3.0/24 is directly connected, FastEthernet0/0
+
+Router#
+Router#
+Router#conf t
+Router#conf terminal 
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#ip route 192.168.4.0 255.255.255.0 192.168.3.3
+Router(config)#
+Router(config)#
+Router(config)#
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#
+Router#
+Router#
+Router#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+C    192.168.2.0/24 is directly connected, FastEthernet0/1
+C    192.168.3.0/24 is directly connected, FastEthernet0/0
+S    192.168.4.0/24 [1/0] via 192.168.3.3
+
+Router#
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#ip route 192.168.1.0 255.255.255.0 192.168.2.2
+Router(config)#
+Router(config)#
+Router(config)#
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#
+Router#
+Router#show ip route
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+S    192.168.1.0/24 [1/0] via 192.168.2.2
+C    192.168.2.0/24 is directly connected, FastEthernet0/1
+C    192.168.3.0/24 is directly connected, FastEthernet0/0
+S    192.168.4.0/24 [1/0] via 192.168.3.3
+
+Router#
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+
+
+
+
+Press RETURN to get started.
+
+
+5.Router 2
+Would you like to enter the initial configuration dialog? [yes/no]: no
+
+
+Press RETURN to get started!
+
+
+
+Router>
+Router>
+Router>en
+Router#conf t
+Router#conf terminal 
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#inter
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/0
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.3.3 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#do write
+Building configuration...
+[OK]
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#exit
+Router(config)#inter
+Router(config)#interface fast
+Router(config)#interface fastEthernet 0/1
+Router(config-if)#ip add
+Router(config-if)#ip address 192.168.4.1 255.255.255.0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#
+Router(config-if)#exit
+Router(config)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+
+
+
+
+
+
+
+
+Router con0 is now available
+
+
+6.Switch 1
+7.PC 1
+COnfig
+⦁	Default Gateway- 192.168.4.1
+⦁	Go in FastEthernet0   IPv4- 192.168.4.10 , Subnet Mask 255.255.255.0
