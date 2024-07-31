@@ -1,0 +1,243 @@
+
+Assignment 1: Understanding SDAP Architecture
+Objective: Describe the architecture of the Service Data Adaptation Protocol (SDAP) in 5G NR. Tasks:
+
+	
+	1. Explain the overall structure of the SDAP layer.
+	2. Ans:-SDAP stand for Service Data Adaption Protocol. The SDAP layer is a part of the 5G network architecture. This is also an upper layer. SDAP come between the PDCP(Packet Data Convergence Protocol) layer and the RLC(Radio Link Control) layer. 
+	3. Purpose:-Purpose of SDAP is to ensure that different type of data flows get the best treatment as they passes through the network.
+	4. The primary task of the SDAP  layer is to map each QoS Flow onto a specific Data Radio Bearer (DRB).
+	The SDAP layer adds header information to the downlink data packets when reflective QoS is enabled at either the Access Stratum or Non-Access Stratum layers.
+	
+	*Key Components :
+	A. Application: Requests data or services from the network.
+	B. SDAP Layer: Acts like an intermediary between the application and the network.
+	C. Network Functions: Provide data and services to the SDAP layer.
+
+          *Process:
+	i.  The application sends a request to the SDAP layer.   
+	ii. The SDAP layer receives the request and adapts it into a format suitable for the network.
+	iii. The   adapted request is sent to the relevant network functions (e.g., data storage, processing, etc.).
+	iv. The network functions process the request and send the response back to the SDAP layer.
+	v. The SDAP layer receives the response, adapts it into a format suitable for the application, and sends it back to the application.
+	
+	In simple The SDAP layer behave as a "translator" between the application and the network, ensuring that data is exchanged proper and effectively.
+	
+	2. Discuss the role of SDAP entities. 
+	
+	
+	Ans. SDAP entities play a crucial role in 5G networks. SDAP entities are present in the SDAP sub layer.  
+	Role of SDAP entity to managing and optimizing data transmission.
+	
+	*Roles:
+	SDAP entity receive/deliver SDAP SDUs from/to upper layer and submits/receives SDAP data PDUs to/ from its peer SDAP entity by lower layer.
+	->At the transmitting side, when an SDAP entity receives a SDAP SDU from Upper layer, it constructs the corresponding SDAP PDU and submits it to lower layers.
+	->At the receiving side, when an SDAP entity receives a SDAP data PDU from lower layers, it retrieves the corresponding SDAP SDU and delivers it to upper layers.
+	
+	*In Simple SDAP entities work together to enable efficient communication between applications and network functions. The SDAP Client requests data, the SDAP Proxy adapts and facilitates the request, and the SDAP Server provides the requested data or resources.
+	
+	3. 
+	3. Illustrate the process of mapping QoS flows to DRBs.
+	Ans. QoS:- It stand for Quality of Service. It refers to the ability of a network to provide a specific level of performance,  reliability, and speed for different types of data traffic . QoS ensures that critical applications receive the necessary network resources to functions adapt to available resource.
+	
+	In simple we can say that QoS is like a traffic manger, ensuring that important data gets VIP treatment and reaches its destination fastely and reliably.
+	
+	DRBs:-It stand for Data Radio Bearer. It is a communication channel in a wireless network that carries data between a device (like a phone) and the network.
+	
+	*QoS Flow to DRBs: SDAP maps QoS flows to dedicated radio bearers (DRBs), enabling the gNB to prioritize and manage data transmission based on QoS requirements.
+	
+	Step 1: QoS flow identification
+	->Identify a QoS (Quality of Service) flow, which is a stream of data with specific requirements (e.g., bandwidth, latency, priority).
+	
+	Step 2: DRB selection-
+	-> Select a suitable DRB from the available pool.
+	- >DRBs are pre-configured channels with specific characteristics (e.g., bandwidth, priority).
+	
+	Step 3: QoS Flow Mapping- 
+	-> Map the QoS flow to the selected DRB.
+	- >This means assigning the QoS flow to the DRB, so the data is transmitted using the DRB's characteristics.
+	
+	Step 4: Configuration-
+	- >Configure the DRB with the QoS flow's requirements (e.g., bandwidth, latency, priority).
+	- >Ensure the DRB is set up to meet the QoS flow's needs.
+	
+	Step 5: Data Transmission-
+	-> Transmit the data using the mapped DRB.
+	- >The data is sent over the air interface, using the configured DRB.
+
+
+
+
+
+Assignment 2: SDAP Services and Functions
+Objective: Analyse the services provided by and expected from the SDAP layer. Tasks:
+	1. List and explain the services SDAP provides to upper layers.
+	Ans: Services that the SDAP provides to the Upper layers in a 5G network are: 
+	i. QoS flow Management: 
+	->SDAP ensures that each type of data (QoS flow) gets the treatment it needs based on its performance requirements.
+	-> It manages QoS flows by assigning them to appropriate Data Radio Bearers (DRBs) to meet their specific needs.
+	
+	ii. Mapping Qis Flow to DRBs:-
+	-> SDAP maps QoS flows to dedicated radio bearers (DRBs), enabling the gNB to prioritize and manage data transmission based on QoS requirements.
+	
+	iii. QoS Flow Identifier Handling:
+	-> It processes and maintains the unique identifiers for each QoS flow.
+	->This helps in correctly managing data packets according to their QoS requirements.
+	
+	These services enable reliable, efficient, and secure communication between the upper layer and the network, allowing applications to function properly.
+	
+	2. Describe the services SDAP expects from lower layers.
+	Ans: SDAP excepts from lower layers are:-
+	• Deliver Data Correctly: Lower layers should make sure the data SDAP sends is delivered accurately.
+	• Fix Errors: If there are any mistakes or lost data, lower layers should fix them and resend if needed.
+	• Control Data Flow: Lower layers should manage how much data is sent at a time to keep things running smoothly and avoid congestion.
+	
+	*By expecting these services from lower layers, SDAP can focus on providing its own services to the upper layer, enabling efficient and reliable communication.
+	
+	3. Outline the main functions of the SDAP layer.
+	Ans: Outline the main function of the SDAP layer:
+	• Assign Data to Channels: SDAP decides which channel (DRB) each type of data should use.
+	• Manage Identifiers: SDAP keeps track of unique tags for each type of data to handle them correctly.
+	• Ensure Quality: SDAP makes sure data meets its performance requirements from start to finish.
+	• Coordinate with Other Layers: SDAP works with both upper and lower network layers to manage data effectively.
+	
+	*SDAP's main function is to "prepare and package" data for transmission over the network, making sure it's delivered correctly and efficiently.
+	
+	
+
+
+
+Assignment 3: SDAP Procedures
+Objective: Detail the procedures involved in SDAP entity handling and data transfer. Tasks:
+	1. Explain the process of establishing and releasing an SDAP entity.
+	
+	Ans: Establishing a SDAP entity:- Creatin a SDAP entity involves setting up a new instance of SDAP to manage a QoS flow.
+	Step 1:- Request Creation:- An application request to establish a SDAP entity.
+	Step 2:- Configuration: The SDAP layer configures the entity with necessary settings.
+	Step 3:-Resource Allocation: The network allocates resources for the entity.
+	Step 4:-Entity Creation: The SDAP entity is created and initialized.
+	Step 5:- Activation: The entity is activated, and data transmission can begin.
+	
+	*Releasing an SDAP Entity:-Removing a SDAP entity when a service ends.
+	Step 1:- Request: The application requests to release the SDAP entity.
+	Step 2:-Deactivation: The entity is deactivated, and data transmission stops.
+	Step 3:- Resource Release: The network releases allocated resources.
+	Step 4:-Entity Deletion: The SDAP entity is deleted.
+	Step 5:- Clean-up: Any remaining resources or settings are cleaned up.
+	
+	
+	
+	2. Describe the steps involved in uplink and downlink data transfer.
+	
+	3. Ans:- Steps to uplink the data transfer from the device to the network are:-
+	Step 1:-Data Generation: The device generates data (e.g., uploading a photo).
+	Step 2:-QoS Flow Identification: SDAP identifies the data’s QoS flow (e.g., high-speed for video).
+	Step 4:-Mapping to DRB: SDAP maps this QoS flow to the appropriate DRB.
+	Step 4:-Data Handling: The data is sent to the DRB, which manages its transfer to the network
+	
+	*Steps to Downlink the data transfer from the network to the device are:-
+	Step 1:-Data Generation: The network generates data (e.g., streaming a video to the device).
+	Step 2:-QoS Flow Identification: SDAP identifies the data’s QoS flow (e.g., high-speed for video streaming).
+	Step 3:-Mapping to DRB: SDAP maps this QoS flow to the appropriate DRB.
+	Step 4:-Data Handling: The data is sent to the DRB, which then delivers it to the device.
+	
+	
+	4. 3.Discuss the concept of Reflective QoS flow to DRB mapping.
+	5. Ans:-
+	Reflective QoS (Quality of Service) flow to DRB (Data Radio Bearer) mapping is a concept that ensures:
+	
+	Incoming data (downlink) is treated with the same priority and quality as outgoing data (uplink) for the same application or service.
+	
+	*If an application sends data (uplink) with high priority and low latency, the network will also deliver incoming data (downlink) for that application with high priority and low latency.
+
+
+	
+	
+	
+
+
+	Assignment 4: SDAP Protocol Data Units (PDUs)
+Objective: Understand the structure and usage of SDAP PDUs. Tasks:
+	1. 1.Explain the difference between Data PDUs and Control PDUs.
+	Ans: Difference between Data PDUs and Control PDUs are:-
+	i. Data PDUs:-
+	->Carry user data (payload) between SDAP layer and upper layer.
+	->Contain actual data being transmitted
+	->Used for data transfer between devices
+	->Typically larger in size
+	ii. Control PDUs:-
+	-> Used for control and management purposes
+	-> Carry control information, not user data
+	-> Used for signaling, configuration, error handling, and flow control
+	->Typically smaller in size
+	
+	*Data PDUs carry the actual data, while Control PDUs manage and control the data transfer process.
+	
+	2. Describe the format of a Data PDU with and without an SDAP header.
+	Ans:-Data PDU with Header
+	- SDAP header
+	- Control information (e.g., sequence numbers, QoS parameters)
+	- Payload (user data)
+	
+	The SDAP header is added to the front of the payload, containing additional control information to help manage the data transmission.
+	
+	*Data PDU without SDAP header:-
+	- Payload (user data)
+	
+	This is the simplest form, where the Data PDU only contains the actual data being transmitted.
+	
+	3. Illustrate the use of End-Marker Control PDU in SDAP.
+	Ans:- The End-Marker Control PDU acts like a "EOF (End of File)" signal, indicating that the data transmission is complete. This helps the receiver manage resources and perform necessary actions after receiving the entire file.                       
+	
+	
+	* If you’re finishing a video call, an End-Marker Control PDU is sent to let the network know that the call has ended and that resources allocated for that session can be released.
+	
+	• During a Call: Data PDUs carry your voice data.
+	• Ending the Call: An End-Marker Control PDU is sent to signal the end of the call.
+	• Network Response: The network acknowledges the End-Marker and cleans up resources allocated for the call.
+	
+
+
+
+Assignment 5: SDAP Parameters and QoS Management
+Objective: Explore the key parameters used in SDAP and their roles in QoS management. Tasks:
+	1. List and explain the purpose of key SDAP parameters like QFI, D/C, RQI, and RDI.
+	2. Ans:- QFI (QoS Flow Identifier):-
+	3. Purpose- This is an unique ID assigned to each data to distinguish between different type of services.
+	4. ->Maps QoS flows to DRBs (Data Radio Bearers), ensuring correct QoS treatment.
+	5. 
+	6. *D/C(Direction):-
+	7. Purpose-Indicates whether the data flow is uplink (from the device to the network) or downlink (from the network to the device).
+	8. ->Determines whether the DRB should be configured for data or control traffic.
+	9. 
+	10. *RQI(Radio QoS Indicator):-
+	11. Purpose- Provides information about the QoS requirements for a specific data flow, like how much speed or reliability is needed.
+	12. ->Ensures symmetric QoS treatment for uplink and downlink data flows.
+	13. 
+	14. *RDI(Radio Data Indicator):-
+	15. Purpose- This indicates the status of the data flow, such as whether it is active or inactive, or if there are issues. It is like a traffic light.
+	
+	
+	2. Describe how these parameters are used in the QoS flow to DRB mapping.
+	3. Ans:-
+	*QFI: Maps the QoS flow to a specific DRB (Data Radio Bearer).
+	*D/C: Determines whether the DRB should be configured for data or control traffic.
+	*RQI: Ensures the QoS parameters are applied in both uplink and downlink directions.
+	*RDI: Influences the prioritization and resource allocation for the DRB.
+	
+	By using these parameters, SDAP ensures that QoS requirements are met by mapping QoS flows to appropriate DRBs.
+	
+	4. 3.Discuss the importance of QoS flow management in 5G NR.
+	5. Ans:- *
+	*Ensures Performance: QoS flow management ensures that different types of data (like video, voice, or text) get the performance they need. For example, video streaming needs high speed and low latency, while a simple text message does not.
+	*Optimizes Resources: By managing QoS flows, the network can allocate resources more effectively, ensuring that high-priority services get the bandwidth and reliability they need.
+	*Enhances User Experience: Proper QoS management helps in providing a better user experience by making sure that services work smoothly and meet the expected quality standards.
+	*Adapts to Changes: Effective QoS flow management allows the network to adapt to changing conditions and user demands, ensuring consistent service quality even as network conditions fluctuate.
+	
+	Ensures data performance, optimizes network resources, enhances user experience, and adapts to changes in network conditions.
+	
+	
+	
+
+ 
+ 
