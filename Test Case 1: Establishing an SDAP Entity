@@ -1,0 +1,50 @@
+#include <iostream>
+#include <string>
+
+class SDAPEntity {
+public:
+    // Constructor to initialize the SDAP entity
+    SDAPEntity(int qfi, std::string direction, int rqi, std::string rdi)
+        : qfi(qfi), direction(direction), rqi(rqi), rdi(rdi) 
+    {
+        std::cout << "SDAP Entity Created" << std::endl;
+        printDetails();
+    }
+
+    // Method to print SDAP entity details
+    void printDetails() const 
+    {
+        std::cout << "QoS Flow Identifier (QFI): " << qfi << std::endl;
+        std::cout << "Direction/Control (D/C): " << direction << std::endl;
+        std::cout << "Radio QoS Indicator (RQI): " << rqi << std::endl;
+        std::cout << "Radio Data Indicator (RDI): " << rdi << std::endl;
+    }
+
+private:
+    int qfi;         // QoS Flow Identifier
+    std::string direction; // Direction or Control
+    int rqi;         // Radio QoS Indicator
+    std::string rdi; // Radio Data Indicator
+};
+// Function to establish an SDAP entity
+void establishSDAPEntity(int qfi, std::string direction, int rqi, std::string rdi) 
+{
+    // Create an instance of SDAPEntity
+    SDAPEntity sdapEntity(qfi, direction, rqi, rdi);
+    
+    // Here you might include additional logic for establishing the entity
+    std::cout << "SDAP Entity Established Successfully" << std::endl;
+}
+int main() 
+{
+    // Example parameters for establishing an SDAP entity
+    int exampleQFI = 5;               // Example QoS Flow Identifier
+    std::string exampleDirection = "Uplink"; // Example Direction
+    int exampleRQI = 10;              // Example Radio QoS Indicator
+    std::string exampleRDI = "Active"; // Example Radio Data Indicator
+
+    // Establish the SDAP entity with the example parameters
+    establishSDAPEntity(exampleQFI, exampleDirection, exampleRQI, exampleRDI);
+
+    return 0;
+}
