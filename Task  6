@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+//Perfotm XOR cipher on the given paylode
+vector<unsigned char> xor_cipher(const vector<unsigned char>& payload, const vector<unsigned char>& key) 
+{
+    vector<unsigned char> ciphered_payload(payload.size());
+    size_t key_length = key.size();
+    
+    //XOR each byte of the paylode with the key
+    for (size_t i = 0; i < payload.size(); ++i) 
+    {
+        ciphered_payload[i] = payload[i] ^ key[i % key_length];
+    }
+        return ciphered_payload;
+}
+
+//Function to print a vector of bytes in hexadecimal format
+void print_hex(const vector<unsigned char>& data) 
+{
+    for (unsigned char byte : data) 
+    {
+        cout << hex << setw(2) << setfill('0') << static_cast<int>(byte);
+    }
+    cout << dec << endl;
+}
+
+int main() 
+{
+     // Example payload
+        vector<unsigned char> payload = { 'W', 'I', 'P', 'R', 'O'};
+        
+        // Key for XOR cipher
+        vector<unsigned char> key = { 0x1F};
+        
+        // Perform XOR cipher
+        vector<unsigned char> ciphered_payload = xor_cipher(payload, key);
+        
+        // Print original and ciphered payloads
+        cout << "Original Payload: ";
+        
+    print_hex(payload);
+    cout << "Ciphered Payload: ";
+    print_hex(ciphered_payload);
+
+     // To demonstrate decryption (which is the same as encryption in XOR cipher)
+    vector<unsigned char> decrypted_payload = xor_cipher(ciphered_payload, key);
+    
+    cout << "Decrypted Payload: ";
+    print_hex(decrypted_payload);
+
+    return 0;
+}
