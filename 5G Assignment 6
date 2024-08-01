@@ -1,0 +1,213 @@
+Q1.What is the role of PDCP in the LTE and 5G networks?
+Ans. Role of PDCP in the LTE and 5G network are:-
+	i.  Header Compression:- PDCP is responsible for compressing header of packet to reduces the size of IP headers to minimize overhead and improve efficiency and also enhance performance. 
+	
+	ii. Ciphering:- PDCP handles encryption and decryption of data to secures before transmission. It encrypts the data before sending and decrypts the data before receiving with higher layer for us.
+	
+	iii.  Data Integrity:- PDCP provide mechanisms to ensure data is not tampered with or corrupted by including checksums during transmission.
+	
+	iv. Sequence Numbering:- PDCP assign sequence number to the packet and it ensures that packet are delivered to the upper layer in the proper order or not. Sequence Numbering is done for providing the propre message to the upper layer.
+	
+	v. Header Compression:- Compress header to decrease the size of data packet and to make the transmission smooth.
+	
+	vi. Recording:- Record packet if they arrive out of sequence.
+	
+*In simple PDCP acts as a "protector" and "optimizer" for data transmission in LTE and 5G networks, ensuring secure, efficient and reliable data transfer between device and network.
+	
+	
+
+Q2.Explain PDCP Structure and entity in details for each steps.
+Ans. PDCP Structure
+
+
+	i. PDCP-SAP(Service Access Point):- It is interface between PDCP and upper layer. It allow to PDCP layer to exchange the data with the higher layer and lower layers.
+	
+	ii. Radio Bearers:- Logical channels for data transmission between the device and network. Radio Bearers is associated with a PDCP entity and carry different type of data(such as video, voice call).
+	
+	iii. PDCP Sublayer:- Divided into two sub-layers: 
+	->PDCP Control plane-Handles control message.
+	->PDCP User Plane- Handles user data.
+	
+	iv. PDCP Entity:- 
+	Manages PDCP functions for a specific radio bearer, including:
+	    - Header compression
+	    - Encryption
+	    - Sequence numbering
+	    - Data integrity protection
+	
+	v. PDCP-PDU(Protocol Data Unit):-The formatted data packet transmitted over the air interface, containing:
+	    - Header
+	    - Data
+	    - Sequence number
+	    - Integrity checksum (optional)
+	->Data is exchange through PDCP.
+	
+	vi. RLC-SDU(Radio Link Control Service Data Unite):- The data packet received from upper layers and passed to RLC for transmission.
+	
+	vii. RLC UM-SAP(Unacknowledged Mode Service Access point):-The interface between RLC and PDCP for unacknowledged mode data transfer.
+	->It is use used for data transfer when acknowledgment are not needed.
+	
+	viii. RLC AM-SAP (Acknowledged Mode Service Access Point):-The interface between RLC and PDCP for acknowledged mode data transfer.
+	->It is used for data transfer where acknowledgments are required.
+	
+	ix. C-SAP (Control Service Access Point):-The interface between PDCP and the control plane  for control message exchange.
+	
+	
+
+*PDCP Entity
+
+
+	*Transmission:-
+	UE/NG-RAN- It is for data transmission.
+	i. Transmission buffer:-Stores data from upper layers before processing/sending and ensure smooth data flow and handle bursts of traffic.
+	
+	ii. Sequence Numbering:-Assigns with sequence numbers to packets for tracking and managing the order of data.
+	
+	iii. Header Compression:- Use to reduce the size of packet by using ROHC or EHC.
+	
+	iv. Integrity Protection:-To ensure the data has not been tampered so we adds integrity checksum for data protection.
+	
+	v. Ciphering:-Encrypts data using keys to protect it from unauthorized access.
+	
+	vi. Add PDCP header:-Adds PDCP header with control information.
+	
+	vii. Duplication:-Manages and handles duplicate packets.
+
+     *Reception:-
+	i. Remove PDCP header:-Removes PDCP-specific headers once data reaches its destination within the network or the end of user.
+	
+	ii. Deciphering:-Decrypts data that was encrypted during transmission.
+	
+	iii. Integrity Verification:- Verifies integrity checksum for data protection.
+	
+	iv. Reception Buffer:- Stores incoming packets temporarily for processing.
+	
+	v. Recording:- Keeps track of data packets for QoS management and other purposes.
+	
+	vi. Header Decompression:- Decompresses headers using ROHC.
+	
+	vii. UE/NG-RAN:-Represents the interaction between User Equipment (UE) and the Next-Generation Radio Access Network (NG-RAN).
+	
+	
+Q3.Describe how PDCP provides confidentiality to the data transmitted over the air interface.
+Ans. PDCP provides confidentiality to data transmitted over the air interface through:-
+	i.  Encryption: PDCP encrypts data using a protected key, making it unreadable to unauthorized person.
+	
+	ii. Integrity Protection: PDCP adds a digital signature to ensure data is not tampered with or modified during transmission.
+	
+	iii. Secure Key Exchange: PDCP uses secure key exchange mechanisms to share encryption keys between the UE and gNB.
+	
+	iv. Decryption:-Once the encrypted data reaches its destination, PDCP decrypts it.
+
+
+Q4.Explain the significance of header compression in PDCP. What protocol is typically used for this purpose?
+Ans. Header Compression:- Use to reduce the size of packet by using ROHC or EHC.
+
+*Significance of Header Compression in PDCP:-
+	i. Reduces Overhead:-Header compression minimizes the size of IP headers, which saves bandwidth and improves transmission efficiency.
+	
+	ii.  Improves performance:-Smaller headers result in faster data transfer and lower latency.
+	
+	iii. Enhances spectral efficiency: By reducing overhead, header compression enables more efficient use of wireless spectrum.
+	
+	iv. Speeds Up Transmission
+	v. Supports High-Speed Mobility
+	
+*Protocol used for header compression in PDCP is:
+	i. ROHC(Robust Header Compression):-
+	ROHC compresses headers by:
+	
+	a. Removing redundant information
+	b. Encoding only changes (e.g., sequence numbers)
+	c. Using context-based compression
+	
+	ii. EHC
+	
+
+	
+Q5.How does PDCP handle data integrity for control plane messages?
+Ans:-PDCP handles data integrity for control plane messages through:
+
+	i.  Cyclic Redundancy Check (CRC): PDCP calculates a CRC checksum for each control plane message.
+	ii.  Message Authentication Code (MAC): PDCP generates a MAC signature using a secret key.
+	iii. Sequence Numbering: PDCP assigns sequence numbers to control plane messages.
+	
+*Here's how it works:
+	
+	i. CRC Checksum: PDCP calculates a CRC checksum for each control plane message to detect errors or tampering.
+	ii. MAC Signature: PDCP generates a MAC signature using a secret key, ensuring authenticity and integrity.
+	iii. Sequence Numbering: PDCP assigns sequence numbers to control plane messages, ensuring correct ordering and detecting duplicate or lost messages.
+	
+*When receiving control plane messages, PDCP:
+	
+	i. Verifies CRC checksum: Ensures the message is error-free.
+	ii. Verifies MAC signature: Authenticates the message and ensures integrity.
+	iii. Checks sequence numbers: Ensures correct ordering and detects duplicate or lost messages.
+	
+*By handling data integrity through CRC, MAC, and sequence numbering, PDCP ensures reliable and secure transmission of control plane messages.
+
+
+Q6.Discuss the sequence numbering mechanism in PDCP and its importance for data transmission.
+Ans:- Sequence numbering in PDCP is a mechanism that assigns a unique sequence number to each PDCP data packet. This ensures:
+
+	i. Correct ordering: Packets are reassembled in the correct order at the receiving end.
+	ii. Duplicate detection: Duplicate packets are identified and discarded.
+	iii. Lost packet detection: Missing packets are detected, allowing for retransmission.
+
+*How it works:
+
+	i. Sequence number assignment: PDCP assigns a sequence number to each packet before transmission.
+	ii. Sequence number increment: Each subsequent packet receives a incremented sequence number.
+	iii. Receiving end: PDCP checks sequence numbers to ensure correct ordering and detect duplicates or lost packets.
+
+*Importance of sequence numbering:
+
+	i. Ensures data integrity: Prevents data corruption due to packet misordering or duplication.
+	ii. Facilitates retransmission: Allows for retransmission of lost packets, ensuring complete data transfer.
+	iii.  Improves performance: Reduces errors, retransmissions, and packet loss, resulting in faster data transmission.
+
+*Sequence numbering in PDCP is crucial for ensuring correct packet ordering, detecting duplicates and lost packets, and facilitating retransmission, ultimately ensuring reliable and efficient data transmission.
+
+Q7.Describe the process and purpose of ROHC within PDCP.
+Ans:-Process of ROHC in PDCP :-
+	i. Compression of Header- ROHC compress the headers of IP packet, which includes headers for protocols such as IPv4, IPv6, UDP, and TCP.
+	->Compress headers using algorithms like LZ77, Huffman coding, or delta encoding.
+	ii. Context Establishment:-RoHC establishes a context for header compression at both the transmitter and receiver.
+	iii. Header encoding:- Encode compressed headers into a smaller format.
+	iv. Transmission: Send compressed headers with data packets.
+	v. Header Decoding:-At the receiver end, RoHC decodes the compressed headers using the same context that was used for compression.
+	vi. Error Handling:- Manages packet loss and errors robustly.
+	
+*Purpose of ROHC:-
+	i. Reduce overhead:- Compress IP headers to minimize bandwidth usage and improve transmission efficiency.
+	ii. Improve performance:- Decrease packet size, reducing latency and increasing data transfer rates.
+
+
+
+Q8.How does PDCP handle duplicate data packets in scenarios involving dual connectivity?
+Ans:-
+In dual connectivity scenarios, PDCP handles duplicate data packets through:
+
+	i. Sequence Numbering: PDCP assigns sequence numbers to packets, ensuring correct ordering and duplicate detection.
+	ii. Duplicate Detection: PDCP checks sequence numbers and packet contents to identify duplicates.
+	iii. Discarding Duplicates: PDCP discards duplicate packets, ensuring only unique packets are delivered to upper layers.
+
+
+Q9.Explain the role of PDCP in uplink and downlink data transfer. What differences, if any, exist between these processes?
+Ans:-PDCP plays a important role in both uplink (UL) and downlink (DL) data transfer:
+*Uplink:-
+	i. Data Reception: PDCP receives data from upper layers.
+	ii. Header Compression: PDCP compresses headers using ROHC.
+	iii. Encryption: PDCP encrypts data using keys from the security layer.
+	iv. Sequence Numbering: PDCP assigns sequence numbers for ordering and duplicate detection.
+	v. Transmission: PDCP sends the processed data to the lower layers for transmission.
+	
+*Downlink:-
+	i. Data Reception: PDCP receives data from lower layers.
+	ii. Decryption: PDCP decrypts data using keys from the security layer.
+	iii. Header Decompression: PDCP decompresses headers using ROHC.
+	iv. Sequence Numbering: PDCP checks sequence numbers for ordering and duplicate detection.
+	v. Data Delivery: PDCP delivers the processed data to upper layers.
+	
+*If any one exit between these process then data/information will stop and it terminated. 
+
