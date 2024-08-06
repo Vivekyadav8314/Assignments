@@ -1,0 +1,180 @@
+[17:17] Abhijeet kumar (Unverified) (External)
+#include "ns3/core-module.h"
+
+#include "ns3/network-module.h"
+
+#include "ns3/internet-module.h"
+
+#include "ns3/point-to-point-module.h"
+
+#include "ns3/applications-module.h"
+ 
+using namespace ns3;
+ 
+NS_LOG_COMPONENT_DEFINE ("TextChannelCodingSimulation");
+ 
+// Function to print a string vector
+
+void PrintText(const std::string& label, const std::vector<std::string>& texts) {
+
+    NS_LOG_INFO(label << ": ");
+
+    for (const auto& text : texts) {
+
+        std::cout << text << " | ";
+
+    }
+
+    std::cout << std::endl;
+
+}
+ 
+// Function to simulate CRC attachment (here, append a fixed "CRC" string)
+
+std::string AttachCRC(const std::string& text) {
+
+    return text + "CRC";
+
+}
+ 
+// Function to simulate scrambling (here, reverse the string)
+
+std::string Scramble(const std::string& input) {
+
+    std::string scrambled = input;
+
+    std::reverse(scrambled.begin(), scrambled.end());
+
+    return scrambled;
+
+}
+ 
+// Function to simulate segmentation (splitting into smaller segments)
+
+std::vector<std::string> SegmentAndAttachCRC(const std::string& input, size_t segmentSize) {
+
+    std::vector<std::string> segments;
+
+    for (size_t i = 0; i < input.length(); i += segmentSize) {
+
+        std::string segment = input.substr(i, std::min(segmentSize, input.size() - i));
+
+        segment = AttachCRC(segment);
+
+        segments.push_back(segment);
+
+    }
+
+    return segments;
+
+}
+ 
+// Function to simulate channel coding (here, repeat the text twice for simplicity)
+
+std::string ChannelCoding(const std::string& input) {
+
+    return input + input; // Repeat the input
+
+}
+ 
+// Function to simulate rate matching (truncate or pad the string to a fixed size)
+
+std::string RateMatching(const std::string& input, size_t targetSize) {
+
+    if (input.size() > targetSize) {
+
+        return input.substr(0, targetSize);
+
+    } else {
+
+        return input + std::string(targetSize - input.size(), '-'); // Pad with dashes
+
+    }
+
+}
+ 
+// Function to simulate code block concatenation
+
+std::string ConcatenateCodeBlocks(const std::vector<std::string>& segments) {
+
+    std::string concatenated;
+
+    for (const auto& segment : segments) {
+
+        concatenated += segment;
+
+    }
+
+    return concatenated;
+
+}
+ 
+int main(int argc, char *argv[]) {
+
+    // Enable logging
+
+    LogComponentEnable("TextChannelCodingSimulation", LOG_LEVEL_INFO);
+ 
+    // Input string
+
+    std::string inputString = "Hello, how are you?";
+ 
+    NS_LOG_INFO("Original Input: " << inputString);
+ 
+    // Step 1: CRC attachment
+
+    auto blockWithCRC = AttachCRC(inputString);
+
+    NS_LOG_INFO("Block with CRC: " << blockWithCRC);
+ 
+    // Step 2: Scrambling
+
+    auto scrambledBlock = Scramble(blockWithCRC);
+
+    NS_LOG_INFO("Scrambled Block: " << scrambledBlock);
+ 
+    // Step 3: Segmentation
+
+    auto segmentedBlocks = SegmentAndAttachCRC(scrambledBlock, 10);
+
+    PrintText("Segmented Blocks with CRC", segmentedBlocks);
+ 
+    // Step 4: Channel coding
+
+    std::vector<std::string> codedBlocks;
+
+    for (const auto& segment : segmentedBlocks) {
+
+        auto codedBlock = ChannelCoding(segment);
+
+        codedBlocks.push_back(codedBlock);
+
+    }
+
+    PrintText("Coded Blocks", codedBlocks);
+ 
+    // Step 5: Rate matching
+
+    std::vector<std::string> rateMatchedBlocks;
+
+    for (const auto& codedBlock : codedBlocks) {
+
+        auto rateMatchedBlock = RateMatching(codedBlock, 20);
+
+        rateMatchedBlocks.push_back(rateMatchedBlock);
+
+    }
+
+    PrintText("Rate Matched Blocks", rateMatchedBlocks);
+ 
+    // Step 6: Code block concatenation
+
+    auto finalOutput = ConcatenateCodeBlocks(rateMatchedBlocks);
+
+    NS_LOG_INFO("Final Output: " << finalOutput);
+ 
+    return 0;
+
+}
+
+ 
