@@ -1,0 +1,101 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+#include <vector>
+#include <iostream>
+ 
+using namespace ns3;
+ 
+// Numerology class
+class Numerology {
+public:
+    Numerology(double subcarrierSpacing) : m_subcarrierSpacing(subcarrierSpacing) {
+        CalculateSlotsPerFrame();
+    }
+    double GetSubcarrierSpacing() const {
+        return m_subcarrierSpacing;
+    }
+    int GetNumberOfSlotsPerFrame() const {
+        return m_slotsPerFrame;
+    }
+ 
+private:
+    double m_subcarrierSpacing; // in kHz
+    int m_slotsPerFrame;
+    void CalculateSlotsPerFrame() {
+        // Assume a standard frame duration of 10 ms
+        // Number of slots per frame = (1 ms / slot duration) * (10 ms / frame duration)
+        // Slot duration = 1 / (subcarrier spacing * 12) ms
+        m_slotsPerFrame = static_cast<int>(m_subcarrierSpacing * 12);
+    }
+};
+ 
+// Slot class
+class Slot {
+public:
+    Slot(int slotNumber, const Numerology& numerology) : m_slotNumber(slotNumber) {
+        // Slot duration = 1 / (subcarrier spacing * 12) ms
+        m_slotDuration = 1 / (numerology.GetSubcarrierSpacing() * 12);
+    }
+    int GetSlotNumber() const {
+        return m_slotNumber;
+    }
+    double GetSlotDuration() const {
+        return m_slotDuration;
+    }
+ 
+private:
+    int m_slotNumber;
+    double m_slotDuration; // in ms
+};
+ 
+// Simulator class
+class MySimulator {
+public:
+    void AddNumerology(const Numerology& numerology) {
+        m_numerologies.push_back(numerology);
+    }
+    void RunSimulation() {
+        for (const auto& numerology : m_numerologies) {
+            CreateSlots(numerology);
+        }
+    }
+    void PrintResults() const {
+        for (const auto& slot : m_slots) {
+            std::cout << "Slot Number: " << slot.GetSlotNumber()
+<< ", Slot Duration: " << slot.GetSlotDuration() << " ms" << std::endl;
+        }
+    }
+ 
+private:
+    std::vector<Numerology> m_numerologies;
+    std::vector<Slot> m_slots;
+    void CreateSlots(const Numerology& numerology) {
+        int numSlots = numerology.GetNumberOfSlotsPerFrame();
+        for (int i = 0; i < numSlots; ++i) {
+            m_slots.emplace_back(i, numerology);
+        }
+    }
+};
+ 
+int main(int argc, char *argv[]) {
+    // Set up the simulator
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+ 
+    MySimulator simulator;
+ 
+    // Add different numerologies
+    Numerology numerology1(15.0); // 15 kHz subcarrier spacing
+    Numerology numerology2(30.0); // 30 kHz subcarrier spacing
+    Numerology numerology3(60.0); // 60 kHz subcarrier spacing
+ 
+    simulator.AddNumerology(numerology1);
+    simulator.AddNumerology(numerology2);
+    simulator.AddNumerology(numerology3);
+ 
+    simulator.RunSimulation();
+    simulator.PrintResults();
+ 
+    return 0;
+}
