@@ -1,0 +1,139 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/point-to-point-module.h"
+#include "ns3/applications-module.h"
+ 
+using namespace ns3;
+ 
+NS_LOG_COMPONENT_DEFINE ("ChannelCodingSimulation");
+ 
+// Function to print a vector of bits
+void PrintBits(const std::string& label, const std::vector<int>& bits) {
+    NS_LOG_INFO(label << ": ");
+    for (const auto& bit : bits) {
+        std::cout << bit;
+    }
+    std::cout << std::endl;
+}
+ 
+// Function to convert a string to a binary vector
+std::vector<int> StringToBinary(const std::string& str) {
+    std::vector<int> binary;
+    for (char c : str) {
+        for (int i = 7; i >= 0; --i) {
+            binary.push_back((c >> i) & 1);
+        }
+    }
+    return binary;
+}
+ 
+// Function to simulate CRC attachment
+std::vector<int> AttachCRC(const std::vector<int>& transportBlock) {
+    std::vector<int> blockWithCRC = transportBlock;
+    // Simple example: Append a fixed CRC (in reality, you would calculate this)
+    blockWithCRC.push_back(1);
+    blockWithCRC.push_back(0);
+    blockWithCRC.push_back(1);
+    return blockWithCRC;
+}
+ 
+// Function to simulate scrambling
+std::vector<int> Scramble(const std::vector<int>& input) {
+    std::vector<int> scrambled = input;
+    // Simple example: XOR with a fixed pattern
+    for (auto& bit : scrambled) {
+        bit = bit ^ 1; // XOR with 1
+    }
+    return scrambled;
+}
+ 
+// Function to simulate CRC attachment and segmentation
+std::vector<std::vector<int>> SegmentAndAttachCRC(const std::vector<int>& input) {
+    std::vector<std::vector<int>> segments;
+    int segmentSize = 16; // Use a larger segment size for this example
+    for (size_t i = 0; i < input.size(); i += segmentSize) {
+        std::vector<int> segment(input.begin() + i, input.begin() + std::min(i + segmentSize, input.size()));
+        segment = AttachCRC(segment);
+        segments.push_back(segment);
+    }
+    return segments;
+}
+ 
+// Function to simulate channel coding
+std::vector<int> ChannelCoding(const std::vector<int>& input) {
+    std::vector<int> coded = input;
+    // Simple example: Repeat each bit (in reality, use a coding algorithm like LDPC)
+    for (size_t i = 0; i < input.size(); ++i) {
+        coded.push_back(input[i]);
+    }
+    return coded;
+}
+ 
+// Function to simulate rate matching
+std::vector<int> RateMatching(const std::vector<int>& input) {
+    std::vector<int> rateMatched = input;
+    // Simple example: Truncate to a fixed size (in reality, use a rate matching algorithm)
+    if (rateMatched.size() > 32) {
+        rateMatched.resize(32);
+    }
+    return rateMatched;
+}
+ 
+// Function to simulate code block concatenation
+std::vector<int> ConcatenateCodeBlocks(const std::vector<std::vector<int>>& segments) {
+    std::vector<int> concatenated;
+    for (const auto& segment : segments) {
+        concatenated.insert(concatenated.end(), segment.begin(), segment.end());
+    }
+    return concatenated;
+}
+ 
+int main(int argc, char *argv[]) {
+    // Enable logging
+    LogComponentEnable("ChannelCodingSimulation", LOG_LEVEL_INFO);
+ 
+    // Input string
+    std::string inputString = "Hi, How are you";
+    auto transportBlock = StringToBinary(inputString);
+    PrintBits("Transport Block", transportBlock);
+ 
+    // Step 1: CRC attachment for the transport block
+    auto blockWithCRC = AttachCRC(transportBlock);
+    PrintBits("Block with CRC", blockWithCRC);
+ 
+    // Step 2: Scrambling
+    auto scrambledBlock = Scramble(blockWithCRC);
+    PrintBits("Scrambled Block", scrambledBlock);
+ 
+    // Step 3: Code block CRC attachment and segmentation
+    auto segmentedBlocks = SegmentAndAttachCRC(scrambledBlock);
+    NS_LOG_INFO("Segmented Blocks with CRC:");
+    for (const auto& segment : segmentedBlocks) {
+        PrintBits("Segment", segment);
+    }
+ 
+    // Step 4: Channel coding
+    std::vector<std::vector<int>> codedBlocks;
+    NS_LOG_INFO("Coded Blocks:");
+    for (const auto& segment : segmentedBlocks) {
+        auto codedBlock = ChannelCoding(segment);
+        codedBlocks.push_back(codedBlock);
+        PrintBits("Coded Block", codedBlock);
+    }
+ 
+    // Step 5: Rate matching
+    std::vector<std::vector<int>> rateMatchedBlocks;
+    NS_LOG_INFO("Rate Matched Blocks:");
+    for (const auto& codedBlock : codedBlocks) {
+        auto rateMatchedBlock = RateMatching(codedBlock);
+        rateMatchedBlocks.push_back(rateMatchedBlock);
+        PrintBits("Rate Matched Block", rateMatchedBlock);
+    }
+ 
+    // Step 6: Code block concatenation
+    auto finalOutput = ConcatenateCodeBlocks(rateMatchedBlocks);
+    PrintBits("Final Output", finalOutput);
+ 
+    return 0;
+}
