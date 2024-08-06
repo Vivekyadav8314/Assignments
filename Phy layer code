@@ -2,75 +2,76 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+using namespace std;
 
 namespace nr {
 
     // Function prototypes
-    std::vector<int> attachTransportBlockCRC(std::vector<int>& block);
-    std::vector<int> scrambling(std::vector<int>& block);
-    std::vector<std::vector<int>> segmentAndAttachCodeBlockCRC(std::vector<int>& block);
-    std::vector<std::vector<int>> channelCoding(std::vector<std::vector<int>>& blocks);
-    std::vector<std::vector<int>> rateMatching(std::vector<std::vector<int>>& blocks);
-    std::vector<int> concatenateBlocks(std::vector<std::vector<int>>& blocks);
+    vector<int> attachTransportBlockCRC(vector<int>& block);
+    vector<int> scrambling(vector<int>& block);
+    vector<vector<int>> segmentAndAttachCodeBlockCRC(vector<int>& block);
+    vector<vector<int>> channelCoding(vector<vector<int>>& blocks);
+    vector<vector<int>> rateMatching(vector<vector<int>>& blocks);
+    vector<int> concatenateBlocks(vector<vector<int>>& blocks);
 
     // Utility function to print a vector
-    void printVector(const std::string& stage, const std::vector<int>& vec) {
-        std::cout << stage << ": ";
+    void printVector(const string& stage, const vector<int>& vec) {
+        cout << stage << ": ";
         for (int bit : vec) {
-            std::cout << bit;
+            cout << bit;
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 
     // Utility function to print a vector of vectors
     void printVectorOfVectors(const std::string& stage, const std::vector<std::vector<int>>& vecs) {
-        std::cout << stage << ":" << std::endl;
+        cout << stage << ":" << endl;
         for (const auto& vec : vecs) {
             for (int bit : vec) {
-                std::cout << bit;
+                cout << bit;
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
 
     // Main simulation function
-    std::vector<int> transportChannelProcessing(std::vector<int>& transportBlock) {
-        std::cout << "Transport Block: ";
+    vector<int> transportChannelProcessing(vector<int>& transportBlock) {
+        cout << "Transport Block: ";
         for (int bit : transportBlock) {
-            std::cout << bit;
+            cout << bit;
         }
-        std::cout << std::endl;
+        cout <<endl;
 
-        std::vector<int> blockWithCRC = attachTransportBlockCRC(transportBlock);
+        vector<int> blockWithCRC = attachTransportBlockCRC(transportBlock);
         printVector("Transport Block CRC attachment", blockWithCRC);
 
-        std::vector<int> scrambledBlock = scrambling(blockWithCRC);
+        vector<int> scrambledBlock = scrambling(blockWithCRC);
         printVector("Scrambling", scrambledBlock);
 
-        std::vector<std::vector<int>> codeBlocks = segmentAndAttachCodeBlockCRC(scrambledBlock);
+        vector<std::vector<int>> codeBlocks = segmentAndAttachCodeBlockCRC(scrambledBlock);
         printVectorOfVectors("Code Block CRC attachment and Segmentation", codeBlocks);
 
-        std::vector<std::vector<int>> codedBlocks = channelCoding(codeBlocks);
+        vector<std::vector<int>> codedBlocks = channelCoding(codeBlocks);
         printVectorOfVectors("Channel Coding", codedBlocks);
 
-        std::vector<std::vector<int>> rateMatchedBlocks = rateMatching(codedBlocks);
+        vector<std::vector<int>> rateMatchedBlocks = rateMatching(codedBlocks);
         printVectorOfVectors("Rate Matching", rateMatchedBlocks);
 
-        std::vector<int> finalBlock = concatenateBlocks(rateMatchedBlocks);
+        vector<int> finalBlock = concatenateBlocks(rateMatchedBlocks);
         printVector("Code Block Concatenation", finalBlock);
 
         return finalBlock;
     }
 
     // Dummy implementation of each step
-    std::vector<int> attachTransportBlockCRC(std::vector<int>& block) {
+    vector<int> attachTransportBlockCRC(vector<int>& block) {
         // Attach CRC (dummy implementation)
-        std::vector<int> crc = {0, 1, 1, 0}; // Example CRC
+        vector<int> crc = {0, 1, 1, 0}; // Example CRC
         block.insert(block.end(), crc.begin(), crc.end());
         return block;
     }
 
-    std::vector<int> scrambling(std::vector<int>& block) {
+    vector<int> scrambling(vector<int>& block) {
         // Scrambling (dummy implementation)
         for (int& bit : block) {
             bit = bit ^ 1; // Example scrambling
@@ -78,31 +79,31 @@ namespace nr {
         return block;
     }
 
-    std::vector<std::vector<int>> segmentAndAttachCodeBlockCRC(std::vector<int>& block) {
+    vector<vector<int>> segmentAndAttachCodeBlockCRC(vector<int>& block) {
         // Segment and attach CRC (dummy implementation)
-        std::vector<std::vector<int>> segments;
+        vector<vector<int>> segments;
         int segmentSize = 8; // Example segment size
         for (size_t i = 0; i < block.size(); i += segmentSize) {
-            std::vector<int> segment(block.begin() + i, block.begin() + std::min(i + segmentSize, block.size()));
+            vector<int> segment(block.begin() + i, block.begin() + min(i + segmentSize, block.size()));
             segment = attachTransportBlockCRC(segment);
             segments.push_back(segment);
         }
         return segments;
     }
 
-    std::vector<std::vector<int>> channelCoding(std::vector<std::vector<int>>& blocks) {
+    vector<vector<int>> channelCoding(vector<vector<int>>& blocks) {
         // Channel coding (dummy implementation)
         return blocks; // No actual coding for dummy implementation
     }
 
-    std::vector<std::vector<int>> rateMatching(std::vector<std::vector<int>>& blocks) {
+    vector<vector<int>> rateMatching(vector<vector<int>>& blocks) {
         // Rate matching (dummy implementation)
         return blocks; // No actual rate matching for dummy implementation
     }
 
-    std::vector<int> concatenateBlocks(std::vector<std::vector<int>>& blocks) {
+    vector<int> concatenateBlocks(vector<vector<int>>& blocks) {
         // Concatenate code blocks
-        std::vector<int> concatenated;
+        vector<int> concatenated;
         for (const auto& block : blocks) {
             concatenated.insert(concatenated.end(), block.begin(), block.end());
         }
@@ -113,11 +114,11 @@ namespace nr {
 
 int main() {
     // Greeting message
-    std::cout << "Hello Vivek" << std::endl;
+    cout << "Hello Vivek" << endl;
 
     // Example transport block
-    std::vector<int> transportBlock = {1, 0, 1, 0, 1, 0, 1, 0};
-    std::vector<int> processedBlock = nr::transportChannelProcessing(transportBlock);
+    vector<int> transportBlock = {1, 0, 1, 0, 1, 0, 1, 0};
+    vector<int> processedBlock = nr::transportChannelProcessing(transportBlock);
     
     return 0;
 }
