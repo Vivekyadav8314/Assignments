@@ -1,0 +1,96 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+#include <vector>
+#include <iostream>
+ 
+using namespace ns3;
+ 
+// Numerology class
+class Numerology {
+public:
+    Numerology(double subcarrierSpacing, int symbolsPerSlot, int slotsPerFrame, double ofdmSymbolDuration, double cpDuration)
+        : m_subcarrierSpacing(subcarrierSpacing),
+          m_symbolsPerSlot(symbolsPerSlot),
+          m_slotsPerFrame(slotsPerFrame),
+          m_ofdmSymbolDuration(ofdmSymbolDuration),
+          m_cpDuration(cpDuration),
+          m_slotDuration((ofdmSymbolDuration + cpDuration) * symbolsPerSlot / 1000.0) {} // Convert to ms
+ 
+    double GetSubcarrierSpacing() const { return m_subcarrierSpacing; }
+    int GetSymbolsPerSlot() const { return m_symbolsPerSlot; }
+    int GetSlotsPerFrame() const { return m_slotsPerFrame; }
+    double GetOfdmSymbolDuration() const { return m_ofdmSymbolDuration; }
+    double GetCpDuration() const { return m_cpDuration; }
+    double GetSlotDuration() const { return m_slotDuration; }
+ 
+private:
+    double m_subcarrierSpacing;
+    int m_symbolsPerSlot;
+    int m_slotsPerFrame;
+    double m_ofdmSymbolDuration;
+    double m_cpDuration;
+    double m_slotDuration;
+};
+ 
+// Slot class
+class Slot {
+public:
+    Slot(int slotNumber, const Numerology& numerology)
+        : m_slotNumber(slotNumber),
+          m_slotDuration(numerology.GetSlotDuration()) {}
+ 
+    int GetSlotNumber() const { return m_slotNumber; }
+    double GetSlotDuration() const { return m_slotDuration; }
+ 
+private:
+    int m_slotNumber;
+    double m_slotDuration; // in ms
+};
+ 
+// Simulator class
+class MySimulator {
+public:
+    void AddNumerology(const Numerology& numerology) {
+        m_numerologies.push_back(numerology);
+    }
+    void RunSimulation() {
+        for (const auto& numerology : m_numerologies) {
+            CreateSlots(numerology);
+        }
+    }
+    void PrintResults() const {
+        for (const auto& slot : m_slots) {
+            std::cout << "Slot Number: " << slot.GetSlotNumber()
+<< ", Slot Duration: " << slot.GetSlotDuration() << " ms" << std::endl;
+        }
+    }
+ 
+private:
+    std::vector<Numerology> m_numerologies;
+    std::vector<Slot> m_slots;
+    void CreateSlots(const Numerology& numerology) {
+        int numSlots = numerology.GetSlotsPerFrame();
+        for (int i = 0; i < numSlots; ++i) {
+            m_slots.emplace_back(i, numerology);
+        }
+    }
+};
+ 
+int main(int argc, char *argv[]) {
+    // Set up the simulator
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+ 
+    MySimulator simulator;
+ 
+    // Add numerology for 30 kHz subcarrier spacing
+    Numerology numerology30kHz(30.0, 14, 20, 33.33, 2.34); // SCS: 30 kHz, Symbols/Slot: 14, Slots/Frame: 20, OFDM Symbol Duration: 33.33 µs, CP Duration: 2.34 µs
+ 
+    simulator.AddNumerology(numerology30kHz);
+ 
+    simulator.RunSimulation();
+    simulator.PrintResults();
+ 
+    return 0;
+}
