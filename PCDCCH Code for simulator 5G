@@ -184,3 +184,199 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+NEW
+
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/random-variable-stream.h"
+
+using namespace ns3;
+
+// Define logging component
+NS_LOG_COMPONENT_DEFINE ("PCDCCHFlow");
+
+// Constants
+const int N = 64;  // Size for demonstration purposes
+const int QPSK_BITS_PER_SYMBOL = 2;
+
+// Function to print vector
+template <typename T>
+void printVector(const std::vector<T>& vec, const std::string& label) {
+    NS_LOG_INFO (label << ": " << vec.size() << " elements");
+    for (const auto& v : vec) {
+        NS_LOG_INFO (v << " ");
+    }
+    NS_LOG_INFO ("");
+}
+
+// CRC Attachment (simplified example)
+std::vector<int> crcAttachment(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.push_back(1);  // Adding a simplified CRC bit
+    return output;
+}
+
+// RNTI Masking (simplified example)
+std::vector<int> rntiMasking(const std::vector<int>& input, int rnti) {
+    std::vector<int> output = input;
+    for (auto& bit : output) {
+        bit ^= (rnti & 1);
+    }
+    return output;
+}
+
+// Interleaving (simplified example)
+std::vector<int> interleaving(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    // Use NS-3 random variable generator for shuffling
+    Ptr<UniformRandomVariable> random = CreateObject<UniformRandomVariable>();
+    std::random_shuffle(output.begin(), output.end(), [random](int i) { return random->GetInteger(0, i - 1); });
+    return output;
+}
+
+// Polar Coding (simplified example)
+std::vector<int> polarCoding(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.insert(output.end(), input.begin(), input.end());  // Simple repetition for demonstration
+    return output;
+}
+
+// Sub-block Interleaving (simplified example)
+std::vector<int> subBlockInterleaving(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    std::reverse(output.begin(), output.end());
+    return output;
+}
+
+// Rate Matching (simplified example)
+std::vector<int> rateMatching(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.resize(N);  // Resize to a fixed size for demonstration
+    return output;
+}
+
+// Scrambling (simplified example)
+std::vector<int> scrambling(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    Ptr<UniformRandomVariable> random = CreateObject<UniformRandomVariable>();
+    for (auto& bit : output) {
+        bit ^= random->GetInteger(0, 1);
+    }
+    return output;
+}
+
+// QPSK Modulation
+std::vector<std::complex<double>> qpskModulation(const std::vector<int>& input) {
+    std::vector<std::complex<double>> output;
+    for (size_t i = 0; i < input.size(); i += QPSK_BITS_PER_SYMBOL) {
+        double real = (input[i] == 0 ? -1.0 : 1.0);
+        double imag = (input[i + 1] == 0 ? -1.0 : 1.0);
+        output.emplace_back(real, imag);
+    }
+    return output;
+}
+
+// Resource Element Mapping (simplified example)
+std::vector<std::complex<double>> reMapping(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct mapping for demonstration
+}
+
+// CCE Indexing (simplified example)
+std::vector<int> cceIndexing(const std::vector<int>& input) {
+    return input;  // Direct indexing for demonstration
+}
+
+// CCE to REG Mapping (simplified example)
+std::vector<int> cceToRegMapping(const std::vector<int>& input) {
+    return input;  // Direct mapping for demonstration
+}
+
+// Precoding (simplified example)
+std::vector<std::complex<double>> precoding(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct output for demonstration
+}
+
+int main(int argc, char *argv[]) {
+    // Setup time and logging
+    Time simTime = MilliSeconds(100);
+    LogComponentEnable ("PCDCCHFlow", LOG_LEVEL_INFO);
+
+    // Create nodes
+    NodeContainer ueNodes, enbNodes;
+    ueNodes.Create(1);
+    enbNodes.Create(1);
+
+    // Install Mobility Model
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(ueNodes);
+    mobility.Install(enbNodes);
+
+    // Install Internet Stack
+    InternetStackHelper internet;
+    internet.Install(ueNodes);
+    internet.Install(enbNodes);
+
+    // Example input: DCI bits
+    std::vector<int> dciBits(N, 1);  // Example input with all bits set to 1
+
+    // 1. CRC Attachment
+    auto crcBits = crcAttachment(dciBits);
+    printVector(crcBits, "CRC Attachment");
+
+    // 2. RNTI Masking
+    int rnti = 0x1234;  // Example RNTI
+    auto maskedBits = rntiMasking(crcBits, rnti);
+    printVector(maskedBits, "RNTI Masking");
+
+    // 3. Interleaving
+    auto interleavedBits = interleaving(maskedBits);
+    printVector(interleavedBits, "Interleaving");
+
+    // 4. Polar Coding
+    auto polarCodedBits = polarCoding(interleavedBits);
+    printVector(polarCodedBits, "Polar Coding");
+
+    // 5. Sub-block Interleaving
+    auto subBlockInterleavedBits = subBlockInterleaving(polarCodedBits);
+    printVector(subBlockInterleavedBits, "Sub-block Interleaving");
+
+    // 6. Rate Matching
+    auto rateMatchedBits = rateMatching(subBlockInterleavedBits);
+    printVector(rateMatchedBits, "Rate Matching");
+
+    // 7. Scrambling
+    auto scrambledBits = scrambling(rateMatchedBits);
+    printVector(scrambledBits, "Scrambling");
+
+    // 8. QPSK Modulation
+    auto qpskSymbols = qpskModulation(scrambledBits);
+    printVector(qpskSymbols, "QPSK Modulation");
+
+    // 9. Resource Element Mapping
+    auto reMappedSymbols = reMapping(qpskSymbols);
+    printVector(reMappedSymbols, "RE Mapping");
+
+    // 10. CCE Indexing
+    auto cceIndexedBits = cceIndexing(rateMatchedBits);
+    printVector(cceIndexedBits, "CCE Indexing");
+
+    // 11. CCE to REG Mapping
+    auto cceToRegMappedBits = cceToRegMapping(cceIndexedBits);
+    printVector(cceToRegMappedBits, "CCE to REG Mapping");
+
+    // 12. Precoding
+    auto precodedSymbols = precoding(reMappedSymbols);
+    printVector(precodedSymbols, "Precoding");
+
+    // Run simulation
+    Simulator::Stop(simTime);
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
