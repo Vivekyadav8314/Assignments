@@ -1,0 +1,162 @@
+#include <iostream>
+#include <vector>
+#include <complex>
+#include <algorithm>
+#include <random>
+#include <bitset>
+
+using namespace std;
+
+// Constants
+const int N = 64;  // Size for demonstration purposes
+const int QPSK_BITS_PER_SYMBOL = 2;
+
+// Function to print vector
+template <typename T>
+void printVector(const vector<T>& vec, const string& label) {
+    cout << label << ": ";
+    for (const auto& v : vec) {
+        cout << v << " ";
+    }
+    cout << endl;
+}
+
+// CRC Attachment (simplified example)
+vector<int> crcAttachment(const vector<int>& input) {
+    vector<int> output = input;
+    output.push_back(1);  // Adding a simplified CRC bit
+    return output;
+}
+
+// RNTI Masking (simplified example)
+vector<int> rntiMasking(const vector<int>& input, int rnti) {
+    vector<int> output = input;
+    for (auto& bit : output) {
+        bit ^= (rnti & 1);
+    }
+    return output;
+}
+
+// Interleaving (simplified example)
+vector<int> interleaving(const vector<int>& input) {
+    vector<int> output = input;
+    random_shuffle(output.begin(), output.end());
+    return output;
+}
+
+// Polar Coding (simplified example)
+vector<int> polarCoding(const vector<int>& input) {
+    vector<int> output = input;
+    output.insert(output.end(), input.begin(), input.end());  // Simple repetition for demonstration
+    return output;
+}
+
+// Sub-block Interleaving (simplified example)
+vector<int> subBlockInterleaving(const vector<int>& input) {
+    vector<int> output = input;
+    reverse(output.begin(), output.end());
+    return output;
+}
+
+// Rate Matching (simplified example)
+vector<int> rateMatching(const vector<int>& input) {
+    vector<int> output = input;
+    output.resize(N);  // Resize to a fixed size for demonstration
+    return output;
+}
+
+// Scrambling (simplified example)
+vector<int> scrambling(const vector<int>& input) {
+    vector<int> output = input;
+    for (auto& bit : output) {
+        bit ^= rand() % 2;
+    }
+    return output;
+}
+
+// QPSK Modulation
+vector<complex<double>> qpskModulation(const vector<int>& input) {
+    vector<complex<double>> output;
+    for (size_t i = 0; i < input.size(); i += QPSK_BITS_PER_SYMBOL) {
+        double real = (input[i] == 0 ? -1.0 : 1.0);
+        double imag = (input[i + 1] == 0 ? -1.0 : 1.0);
+        output.emplace_back(real, imag);
+    }
+    return output;
+}
+
+// Resource Element Mapping (simplified example)
+vector<complex<double>> reMapping(const vector<complex<double>>& input) {
+    return input;  // Direct mapping for demonstration
+}
+
+// CCE Indexing (simplified example)
+vector<int> cceIndexing(const vector<int>& input) {
+    return input;  // Direct indexing for demonstration
+}
+
+// CCE to REG Mapping (simplified example)
+vector<int> cceToRegMapping(const vector<int>& input) {
+    return input;  // Direct mapping for demonstration
+}
+
+// Precoding (simplified example)
+vector<complex<double>> precoding(const vector<complex<double>>& input) {
+    return input;  // Direct output for demonstration
+}
+
+int main() {
+    // Example input: DCI bits
+    vector<int> dciBits(N, 1);  // Example input with all bits set to 1
+
+    // 1. CRC Attachment
+    auto crcBits = crcAttachment(dciBits);
+    printVector(crcBits, "CRC Attachment");
+
+    // 2. RNTI Masking
+    int rnti = 0x1234;  // Example RNTI
+    auto maskedBits = rntiMasking(crcBits, rnti);
+    printVector(maskedBits, "RNTI Masking");
+
+    // 3. Interleaving
+    auto interleavedBits = interleaving(maskedBits);
+    printVector(interleavedBits, "Interleaving");
+
+    // 4. Polar Coding
+    auto polarCodedBits = polarCoding(interleavedBits);
+    printVector(polarCodedBits, "Polar Coding");
+
+    // 5. Sub-block Interleaving
+    auto subBlockInterleavedBits = subBlockInterleaving(polarCodedBits);
+    printVector(subBlockInterleavedBits, "Sub-block Interleaving");
+
+    // 6. Rate Matching
+    auto rateMatchedBits = rateMatching(subBlockInterleavedBits);
+    printVector(rateMatchedBits, "Rate Matching");
+
+    // 7. Scrambling
+    auto scrambledBits = scrambling(rateMatchedBits);
+    printVector(scrambledBits, "Scrambling");
+
+    // 8. QPSK Modulation
+    auto qpskSymbols = qpskModulation(scrambledBits);
+    printVector(qpskSymbols, "QPSK Modulation");
+
+    // 9. Resource Element Mapping
+    auto reMappedSymbols = reMapping(qpskSymbols);
+    printVector(reMappedSymbols, "RE Mapping");
+
+    // 10. CCE Indexing
+    auto cceIndexedBits = cceIndexing(rateMatchedBits);
+    printVector(cceIndexedBits, "CCE Indexing");
+
+    // 11. CCE to REG Mapping
+    auto cceToRegMappedBits = cceToRegMapping(cceIndexedBits);
+    printVector(cceToRegMappedBits, "CCE to REG Mapping");
+
+    // 12. Precoding
+    auto precodedSymbols = precoding(reMappedSymbols);
+    printVector(precodedSymbols, "Precoding");
+
+    return 0;
+}
