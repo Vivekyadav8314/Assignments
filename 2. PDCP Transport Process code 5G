@@ -1,0 +1,108 @@
+#include <iostream>
+#include <vector>
+#include <cstdint>
+
+// PBCH payload generation
+std::vector<uint8_t> generatePBCHPayload() {
+  // System information (SI) message
+  uint8_t siMessage[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+  std::vector<uint8_t> payload(siMessage, siMessage + sizeof(siMessage));
+  return payload;
+}
+
+// Scrambling
+void scramble(std::vector<uint8_t>& payload) {
+  uint8_t scramblingSequence[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+  for (size_t i = 0; i < payload.size(); i++) {
+    payload[i] ^= scramblingSequence[i % sizeof(scramblingSequence)];
+  }
+}
+
+// CRC attachment
+void attachCRC(std::vector<uint8_t>& payload) {
+  uint16_t crc = calculateCRC(payload);
+  payload.push_back((crc >> 8) & 0xFF);
+  payload.push_back(crc & 0xFF);
+}
+
+// Channel coding ( convolutional coding )
+void channelCode(std::vector<uint8_t>& payload) {
+  // Convolutional encoder
+  std::vector<uint8_t> encodedPayload;
+  for (size_t i = 0; i < payload.size(); i++) {
+    encodedPayload.push_back(payload[i] << 2);
+    encodedPayload.push_back((payload[i] >> 6) | (payload[i] << 2));
+    encodedPayload.push_back((payload[i] >> 4) | (payload[i] << 4));
+    encodedPayload.push_back((payload[i] >> 2) | (payload[i] << 6));
+  }
+  payload = encodedPayload;
+}
+
+// Rate matching
+void rateMatch(std::vector<uint8_t>& payload) {
+  // Puncture or repeat bits to match the desired code rate
+  // For simplicity, we'll just puncture bits here
+  payload.resize(payload.size() / 2);
+}
+
+// Scrambling (again)
+void scrambleAgain(std::vector<uint8_t>& payload) {
+  // Use a different scrambling sequence for the second scrambling
+  uint8_t scramblingSequence[] = {0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
+  for (size_t i = 0; i < payload.size(); i++) {
+    payload[i] ^= scramblingSequence[i % sizeof(scramblingSequence)];
+  }
+}
+
+// Modulation (QPSK)
+void modulate(std::vector<uint8_t>& payload) {
+  std::vector<std::complex<float>> modulatedSymbols;
+  for (size_t i = 0; i < payload.size(); i += 2) {
+    uint8_t symbol = (payload[i] << 2) | payload[i + 1];
+    float real = (symbol >> 2) & 0x3;
+    float imag = symbol & 0x3;
+    modulatedSymbols.push_back(std::complex<float>(real, imag));
+  }
+  // Output modulated symbols
+  for (const auto& symbol : modulatedSymbols) {
+    std::cout << "Modulated symbol: " << symbol << std::endl;
+  }
+}
+
+// RE mapping
+void reMap(std::vector<std::complex<float>>& modulatedSymbols) {
+  // Map modulated symbols to resource elements
+  // For simplicity, we'll just map them to consecutive REs
+  for (size_t i = 0; i < modulatedSymbols.size(); i++) {
+    std::cout << "RE " << i << ": " << modulatedSymbols[i] << std::endl;
+  }
+}
+
+int main() {
+  // Generate PBCH payload
+  std::vector<uint8_t> payload = generatePBCHPayload();
+
+  // Scramble payload
+  scramble(payload);
+
+  // Attach CRC
+  attachCRC(payload);
+
+  // Channel code
+  channelCode(payload);
+
+  // Rate match
+  rateMatch(payload);
+
+  // Scramble again
+  scrambleAgain(payload);
+
+  // Modulate
+  modulate(payload);
+
+  // RE map
+  std::vector<std::complex<float>> modulatedSymbols;
+  reMap(modulatedSymbols);
+
+  return 0;
+}
