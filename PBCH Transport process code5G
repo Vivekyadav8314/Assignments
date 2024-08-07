@@ -1,0 +1,193 @@
+#include <iostream>
+#include <vector>
+#include <complex>
+#include <cmath>
+#include <bitset>
+
+using namespace std;
+
+const int N_subcarriers = 2048;  // Number of subcarriers (N_u)
+const int N_cp = 144;  // Cyclic prefix length for normal CP
+const double PI = 3.14159265358979323846;
+
+// Placeholder for actual PBCH payload generation
+vector<int> generatePBCHpayload(int size) {
+    vector<int> payload(size);
+    for (int i = 0; i < size; ++i) {
+        payload[i] = rand() % 2;  // Generate random bits (0 or 1)
+    }
+    return payload;
+}
+
+// Placeholder for scrambling function
+vector<int> scrambling(const vector<int>& input, int cellID) {
+    vector<int> scrambled = input;
+    // Apply a simple scrambling operation
+    for (int i = 0; i < input.size(); ++i) {
+        scrambled[i] = input[i] ^ (cellID & 1);  // Example scrambling with cellID
+    }
+    return scrambled;
+}
+
+// Placeholder for CRC attachment
+vector<int> attachCRC(const vector<int>& input) {
+    vector<int> withCRC = input;
+    // Append a simple CRC (example: 4-bit CRC)
+    int crc = 0;
+    for (int bit : input) {
+        crc ^= bit;
+    }
+    withCRC.push_back(crc & 1);
+    withCRC.push_back((crc >> 1) & 1);
+    withCRC.push_back((crc >> 2) & 1);
+    withCRC.push_back((crc >> 3) & 1);
+    return withCRC;
+}
+
+// Placeholder for Polar coding
+vector<int> polarCoding(const vector<int>& input) {
+    vector<int> coded = input;
+    // Example: repeat the input bits twice (dummy coding)
+    coded.insert(coded.end(), input.begin(), input.end());
+    return coded;
+}
+
+// Placeholder for rate matching
+vector<int> rateMatching(const vector<int>& input, int targetSize) {
+    vector<int> matched = input;
+    matched.resize(targetSize);  // Resize to target size (dummy operation)
+    return matched;
+}
+
+// Placeholder for modulation (QPSK)
+vector<complex<double>> modulation(const vector<int>& input) {
+    vector<complex<double>> modulated;
+    for (int i = 0; i < input.size(); i += 2) {
+        double real = (input[i] == 0) ? 1.0 : -1.0;
+        double imag = (input[i + 1] == 0) ? 1.0 : -1.0;
+        modulated.push_back(complex<double>(real, imag));
+    }
+    return modulated;
+}
+
+// Placeholder for RE mapping
+vector<complex<double>> reMapping(const vector<complex<double>>& modulated) {
+    // Example: map directly to subcarriers (no actual mapping in this dummy version)
+    return modulated;
+}
+
+// Function to perform Inverse FFT (simplified for educational purposes)
+vector<complex<double>> simpleIFFT(const vector<complex<double>>& input) {
+    int N = input.size();
+    vector<complex<double>> output(N);
+
+    for (int k = 0; k < N; ++k) {
+        for (int n = 0; n < N; ++n) {
+            double angle = 2 * PI * k * n / N;
+            output[k] += input[n] * exp(complex<double>(0, angle));
+        }
+        output[k] /= N;
+    }
+
+    return output;
+}
+
+// Function to add cyclic prefix
+vector<complex<double>> addCyclicPrefix(const vector<complex<double>>& ofdmSymbol) {
+    vector<complex<double>> withCP(N_subcarriers + N_cp);
+    // Copy cyclic prefix
+    for (int i = 0; i < N_cp; ++i) {
+        withCP[i] = ofdmSymbol[N_subcarriers - N_cp + i];
+    }
+
+    // Copy OFDM symbol
+    for (int i = 0; i < N_subcarriers; ++i) {
+        withCP[N_cp + i] = ofdmSymbol[i];
+    }
+
+    return withCP;
+}
+
+int main() {
+    int payloadSize = 32;  // Example payload size in bits
+    int cellID = 1;  // Example cell ID
+    int targetSize = 64;  // Example target size for rate matching
+
+    // PBCH payload generation
+    vector<int> pbchPayload = generatePBCHpayload(payloadSize);
+    cout << "PBCH Payload: ";
+    for (int bit : pbchPayload) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // Scrambling
+    vector<int> scrambled = scrambling(pbchPayload, cellID);
+    cout << "Scrambled: ";
+    for (int bit : scrambled) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // CRC attachment
+    vector<int> withCRC = attachCRC(scrambled);
+    cout << "With CRC: ";
+    for (int bit : withCRC) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // Channel coding (Polar coding)
+    vector<int> coded = polarCoding(withCRC);
+    cout << "Coded: ";
+    for (int bit : coded) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // Rate matching
+    vector<int> rateMatched = rateMatching(coded, targetSize);
+    cout << "Rate Matched: ";
+    for (int bit : rateMatched) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // Second scrambling (using a different scrambling sequence)
+    vector<int> secondScrambled = scrambling(rateMatched, cellID + 1);
+    cout << "Second Scrambled: ";
+    for (int bit : secondScrambled) {
+        cout << bit;
+    }
+    cout << endl;
+
+    // Modulation (QPSK)
+    vector<complex<double>> modulated = modulation(secondScrambled);
+    cout << "Modulated: ";
+    for (const auto& symbol : modulated) {
+        cout << symbol << " ";
+    }
+    cout << endl;
+
+    // RE Mapping
+    vector<complex<double>> reMapped = reMapping(modulated);
+    cout << "RE Mapped: ";
+    for (const auto& symbol : reMapped) {
+        cout << symbol << " ";
+    }
+    cout << endl;
+
+    // Generate OFDM symbol
+    vector<complex<double>> ofdmSymbol = simpleIFFT(reMapped);
+
+    // Add cyclic prefix
+    vector<complex<double>> ofdmSymbolWithCP = addCyclicPrefix(ofdmSymbol);
+
+    // Output the OFDM symbol with cyclic prefix
+    cout << "OFDM symbol with cyclic prefix:" << endl;
+    for (const auto& sample : ofdmSymbolWithCP) {
+        cout << sample << endl;
+    }
+
+    return 0;
+}
