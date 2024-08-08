@@ -1,0 +1,119 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/lte-module.h"
+#include "ns3/point-to-point-helper.h"
+#include "ns3/point-to-point-epc-helper.h"
+#include "ns3/mobility-module.h"
+#include "ns3/config-store.h"
+
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE ("LteTimeDomainResourceAllocationExample");
+
+int main (int argc, char *argv[])
+{
+  // Enable logging from the ns-3 LTE module
+  LogComponentEnable ("LteTimeDomainResourceAllocationExample", LOG_LEVEL_INFO);
+  LogComponentEnable ("LteEnbRrc", LOG_LEVEL_INFO);
+  LogComponentEnable ("LteUeRrc", LOG_LEVEL_INFO);
+
+  // Create LTE and EPC helpers
+  Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
+  Ptr<PointToPointEpcHelper> epcHelper = CreateObject<PointToPointEpcHelper> ();
+  lteHelper->SetEpcHelper (epcHelper);
+
+  // Create a single remote host
+  Ptr<Node> pgw = epcHelper->GetPgwNode ();
+  NodeContainer remoteHostContainer;
+  remoteHostContainer.Create (1);
+  Ptr<Node> remoteHost = remoteHostContainer.Get (0);
+  InternetStackHelper internet;
+  internet.Install (remoteHostContainer);
+
+  // Create the Internet
+  PointToPointHelper p2ph;
+  p2ph.SetDeviceAttribute ("DataRate", DataRateValue (DataRate ("100Gb/s")));
+  p2ph.SetDeviceAttribute ("Mtu", UintegerValue (1500));
+  p2ph.SetChannelAttribute ("Delay", TimeValue (Seconds (0.010)));
+  NetDeviceContainer internetDevices = p2ph.Install (pgw, remoteHost);
+  Ipv4AddressHelper ipv4h;
+  ipv4h.SetBase ("1.0.0.0", "255.0.0.0");
+  Ipv4InterfaceContainer internetIpIfaces = ipv4h.Assign (internetDevices);
+
+  // Set up the routing between the remote host and the LTE network
+  Ipv4StaticRoutingHelper ipv4RoutingHelper;
+  Ptr<Ipv4StaticRouting> remoteHostStaticRouting = ipv4RoutingHelper.GetStaticRouting (remoteHost->GetObject<Ipv4> ());
+  remoteHostStaticRouting->AddNetworkRouteTo (Ipv4Address ("7.0.0.0"), Ipv4Mask ("255.0.0.0"), 1);
+
+  // Create an eNodeB
+  NodeContainer enbNodes;
+  enbNodes.Create (1);
+  NodeContainer ueNodes;
+  ueNodes.Create (2); // Create 2 UEs
+
+  // Install mobility model
+  MobilityHelper mobility;
+  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  mobility.Install (enbNodes);
+  mobility.Install (ueNodes);
+
+  // Install LTE devices to the nodes
+  NetDeviceContainer enbLteDevs = lteHelper->InstallEnbDevice (enbNodes);
+  NetDeviceContainer ueLteDevs = lteHelper->InstallUeDevice (ueNodes);
+
+  // Attach the UEs to the eNodeB
+  for (uint32_t i = 0; i < ueNodes.GetN (); ++i)
+    {
+      lteHelper->Attach (ueLteDevs.Get (i), enbLteDevs.Get (0));
+    }
+
+  // Install the IP stack on the UEs
+  internet.Install (ueNodes);
+  Ipv4InterfaceContainer ueIpIface;
+  ueIpIface = epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs));
+
+  // Assign IP address to UEs and set up routing
+  for (uint32_t i = 0; i < ueNodes.GetN (); ++i)
+    {
+      Ptr<Node> ueNode = ueNodes.Get (i);
+      Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+      ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+    }
+
+  // Create a downlink PDSCH packet sink on the remote host to receive traffic
+  uint16_t dlPort = 1234;
+  ApplicationContainer clientApps;
+  ApplicationContainer serverApps;
+
+  UdpClientHelper dlClientHelper (ueIpIface.GetAddress (0), dlPort);
+  dlClientHelper.SetAttribute ("Interval", TimeValue (MilliSeconds (10)));
+  dlClientHelper.SetAttribute ("MaxPackets", UintegerValue (1000000));
+  clientApps.Add (dlClientHelper.Install (remoteHost));
+
+  UdpServerHelper dlPacketSinkHelper (dlPort);
+  serverApps.Add (dlPacketSinkHelper.Install (ueNodes.Get (0)));
+
+  // Create a second downlink PDSCH packet sink for the second UE
+  uint16_t dlPort2 = 1235;
+  UdpClientHelper dlClientHelper2 (ueIpIface.GetAddress (1), dlPort2);
+  dlClientHelper2.SetAttribute ("Interval", TimeValue (MilliSeconds (10)));
+  dlClientHelper2.SetAttribute ("MaxPackets", UintegerValue (1000000));
+  clientApps.Add (dlClientHelper2.Install (remoteHost));
+
+  UdpServerHelper dlPacketSinkHelper2 (dlPort2);
+  serverApps.Add (dlPacketSinkHelper2.Install (ueNodes.Get (1)));
+
+  // Start and stop the applications
+  serverApps.Start (Seconds (0.01));
+  clientApps.Start (Seconds (0.01));
+  serverApps.Stop (Seconds (0.1));
+  clientApps.Stop (Seconds (0.1));
+
+  // Start the simulation
+  Simulator::Stop (Seconds (0.1));
+  Simulator::Run ();
+  Simulator::Destroy ();
+
+  return 0;
+}
