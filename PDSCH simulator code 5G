@@ -1,0 +1,150 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/random-variable-stream.h"
+#include <vector>
+#include <complex>
+#include <sstream>
+#include <iomanip>
+
+using namespace ns3;
+
+// Define logging component
+NS_LOG_COMPONENT_DEFINE("PDSCHTransportProcess");
+
+// Constants
+const int N = 64;  // Size for demonstration purposes
+const int QPSK_BITS_PER_SYMBOL = 2;
+
+// Function to print vector in a single line
+template <typename T>
+void printVector(const std::vector<T>& vec, const std::string& label) {
+    std::ostringstream oss;
+    oss << label << ": ";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        oss << vec[i];
+        if ((i + 1) < vec.size()) {
+            oss << " ";
+        }
+    }
+    NS_LOG_INFO(oss.str());
+}
+
+// Function to print vector of complex numbers in a single line
+void printVector(const std::vector<std::complex<double>>& vec, const std::string& label) {
+    std::ostringstream oss;
+    oss << label << ": ";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        const auto& v = vec[i];
+        oss << "(" << v.real() << ", " << v.imag() << ")";
+        if ((i + 1) < vec.size()) {
+            oss << " ";
+        }
+    }
+    NS_LOG_INFO(oss.str());
+}
+
+// PBCH Payload Generation (simplified example)
+std::vector<int> pbchPayloadGeneration() {
+    std::vector<int> payload(N, 0);  // Example payload with all bits set to 0
+    payload[0] = 1;  // Setting first bit for demonstration
+    return payload;
+}
+
+// Scrambling (simplified example)
+std::vector<int> scrambling(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    Ptr<UniformRandomVariable> random = CreateObject<UniformRandomVariable>();
+    for (auto& bit : output) {
+        bit ^= random->GetInteger(0, 1);
+    }
+    return output;
+}
+
+// CRC Attachment (simplified example)
+std::vector<int> crcAttachment(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.push_back(1);  // Adding a simplified CRC bit
+    return output;
+}
+
+// Rate Matching (simplified example)
+std::vector<int> rateMatching(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.resize(N);  // Resize to a fixed size for demonstration
+    return output;
+}
+
+// Modulation (QPSK for demonstration)
+std::vector<std::complex<double>> modulation(const std::vector<int>& input) {
+    std::vector<std::complex<double>> output;
+    for (size_t i = 0; i < input.size(); i += QPSK_BITS_PER_SYMBOL) {
+        double real = (input[i] == 0 ? -1.0 : 1.0);
+        double imag = (input[i + 1] == 0 ? -1.0 : 1.0);
+        output.emplace_back(real, imag);
+    }
+    return output;
+}
+
+// Resource Element Mapping (simplified example)
+std::vector<std::complex<double>> reMapping(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct mapping for demonstration
+}
+
+int main(int argc, char *argv[]) {
+    // Setup time and logging
+    Time simTime = MilliSeconds(100);
+    LogComponentEnable("PDSCHTransportProcess", LOG_LEVEL_INFO);
+
+    // Create nodes
+    NodeContainer ueNodes, enbNodes;
+    ueNodes.Create(1);
+    enbNodes.Create(1);
+
+    // Install Mobility Model
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(ueNodes);
+    mobility.Install(enbNodes);
+
+    // Install Internet Stack
+    InternetStackHelper internet;
+    internet.Install(ueNodes);
+    internet.Install(enbNodes);
+
+    // 1. PBCH Payload Generation
+    auto pbchPayload = pbchPayloadGeneration();
+    printVector(pbchPayload, "PBCH Payload Generation");
+
+    // 2. Scrambling
+    auto scrambledPayload = scrambling(pbchPayload);
+    printVector(scrambledPayload, "Scrambling");
+
+    // 3. CRC Attachment
+    auto crcBits = crcAttachment(scrambledPayload);
+    printVector(crcBits, "CRC Attachment");
+
+    // 4. Rate Matching
+    auto rateMatchedBits = rateMatching(crcBits);
+    printVector(rateMatchedBits, "Rate Matching");
+
+    // 5. Scrambling
+    auto finalScrambledBits = scrambling(rateMatchedBits);
+    printVector(finalScrambledBits, "Final Scrambling");
+
+    // 6. Modulation
+    auto modulatedSymbols = modulation(finalScrambledBits);
+    printVector(modulatedSymbols, "Modulation");
+
+    // 7. Resource Element Mapping
+    auto reMappedSymbols = reMapping(modulatedSymbols);
+    printVector(reMappedSymbols, "RE Mapping");
+
+    // Run simulation
+    Simulator::Stop(simTime);
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
