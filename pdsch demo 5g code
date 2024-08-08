@@ -1,0 +1,130 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
+
+// Function to print status updates
+void PrintStatus(const std::string& message) {
+    std::cout << message << std::endl;
+}
+
+// Function to create a transport block
+void CreateTransportBlock(uint32_t size) {
+    PrintStatus("Transport Block created with size: " + std::to_string(size) + " bits.");
+}
+
+// Function to attach CRC to the transport block
+void AttachCrc(uint32_t tbSize) {
+    uint32_t crcSize = (tbSize > 3824) ? 24 : 16;
+    PrintStatus("CRC attached to transport block. CRC size: " + std::to_string(crcSize) + " bits.");
+}
+
+// Function to select LDPC base graph
+uint8_t SelectLdpcBaseGraph(uint32_t tbSize, double codingRate) {
+    if (codingRate < 0.25 || tbSize < 292 || tbSize < 3824) {
+        PrintStatus("Selected LDPC Base Graph: 2");
+        return 2;
+    } else {
+        PrintStatus("Selected LDPC Base Graph: 1");
+        return 1;
+    }
+}
+
+// Function to perform segmentation
+std::vector<std::pair<uint32_t, uint32_t>> SegmentPacket(uint32_t tbSize, uint32_t crcSize, uint8_t baseGraph) {
+    std::vector<std::pair<uint32_t, uint32_t>> segments;
+    uint32_t maxSize = (baseGraph == 1) ? 8448 : 3840;
+    uint32_t segmentSize = maxSize - 24; // Account for CRC
+    if (tbSize + crcSize > maxSize) {
+        uint32_t numSegments = std::ceil((double)(tbSize + crcSize) / segmentSize);
+        for (uint32_t i = 0; i < numSegments; ++i) {
+            segments.push_back(std::make_pair(segmentSize, 24)); // Segment size and CRC size
+            PrintStatus("Segment " + std::to_string(i + 1) + " created with size: " + std::to_string(segmentSize) + " bits, 24-bit CRC added.");
+        }
+        PrintStatus("Packet segmented into " + std::to_string(segments.size()) + " segments.");
+    } else {
+        segments.push_back(std::make_pair(tbSize + crcSize, 24));
+        PrintStatus("No segmentation required. Single segment with size: " + std::to_string(tbSize + crcSize) + " bits.");
+    }
+    return segments;
+}
+
+// Function to perform LDPC coding
+void PerformLdpcCoding(const std::vector<std::pair<uint32_t, uint32_t>>& segments, uint8_t baseGraph) {
+    PrintStatus("LDPC coding performed using Base Graph " + std::to_string(baseGraph) + ".");
+}
+
+// Function to perform rate matching
+void PerformRateMatching(const std::vector<std::pair<uint32_t, uint32_t>>& segments) {
+    PrintStatus("Rate matching completed.");
+}
+
+// Function to concatenate code blocks
+void ConcatenateCodeBlocks(const std::vector<std::pair<uint32_t, uint32_t>>& segments) {
+    PrintStatus("Code blocks concatenated.");
+}
+
+// Function to perform scrambling
+void ScramblePacket() {
+    PrintStatus("Packet scrambled using 31-length Gold sequence.");
+}
+
+// Function to perform modulation
+void PerformModulation() {
+    PrintStatus("Modulation applied using 64 QAM.");
+}
+
+// Function to perform layer mapping
+void PerformLayerMapping() {
+    PrintStatus("Layer mapping done.");
+}
+
+// Function to perform VRB to PRB mapping
+void PerformVrbToPrbMapping() {
+    PrintStatus("VRB to PRB mapping completed.");
+}
+
+int main() {
+    // Example parameters
+    uint32_t tbSize = 5000; // Example transport block size
+    double codingRate = 0.3; // Example coding rate
+
+    // Step 1: Transport Block
+    CreateTransportBlock(tbSize);
+
+    // Step 2: Attach CRC
+    AttachCrc(tbSize);
+
+    // Step 3: LDPC base graph selection
+    uint8_t baseGraph = SelectLdpcBaseGraph(tbSize, codingRate);
+
+    // Step 4: Code Block Segmentation
+    uint32_t crcSize = (tbSize > 3824) ? 24 : 16;
+    auto segments = SegmentPacket(tbSize, crcSize, baseGraph);
+
+    // Step 5: LDPC Coding
+    PerformLdpcCoding(segments, baseGraph);
+
+    // Step 6: Rate Matching
+    PerformRateMatching(segments);
+
+    // Step 7: Code Block Concatenation
+    ConcatenateCodeBlocks(segments);
+
+    // Step 8: Scrambling
+    ScramblePacket();
+
+    // Step 9: Modulation
+    PerformModulation();
+
+    // Step 10: Layer Mapping
+    PerformLayerMapping();
+
+    // Step 11: VRB Mapping (pseudo-code)
+    // PerformVrbMapping(); // Not implemented in this example
+
+    // Step 12: VRB to PRB Mapping
+    PerformVrbToPrbMapping();
+
+    return 0;
+}
