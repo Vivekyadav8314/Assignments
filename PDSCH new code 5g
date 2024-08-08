@@ -1,0 +1,176 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/random-variable-stream.h"
+#include "ns3/packet.h"
+#include "ns3/udp-client-server-helper.h"
+#include <vector>
+#include <complex>
+#include <sstream>
+
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE ("PDSCHTransportProcess");
+
+const int N = 64;  // Size for demonstration purposes
+const int QPSK_BITS_PER_SYMBOL = 2;
+
+// Utility functions
+template <typename T>
+void printVector(const std::vector<T>& vec, const std::string& label) {
+    std::ostringstream oss;
+    oss << label << ": ";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        oss << vec[i];
+        if ((i + 1) % 10 == 0) {
+            oss << "\n";
+        } else {
+            oss << " ";
+        }
+    }
+    NS_LOG_INFO(oss.str());
+}
+
+void printVector(const std::vector<std::complex<double>>& vec, const std::string& label) {
+    std::ostringstream oss;
+    oss << label << ": ";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        const auto& v = vec[i];
+        oss << "(" << v.real() << ", " << v.imag() << ")";
+        if ((i + 1) % 5 == 0) {
+            oss << "\n";
+        } else {
+            oss << " ";
+        }
+    }
+    NS_LOG_INFO(oss.str());
+}
+
+// Placeholder function for Transport Block (TB) generation
+std::vector<int> generateTransportBlock() {
+    std::vector<int> tb(N, 0);
+    tb[0] = 1;  // Simplified example
+    return tb;
+}
+
+// Placeholder function for TB CRC Attachment
+std::vector<int> attachTbCrc(const std::vector<int>& tb) {
+    std::vector<int> tbCrc = tb;
+    tbCrc.push_back(1);  // Simplified CRC
+    return tbCrc;
+}
+
+// Placeholder function for LDPC Base Graph Encoding
+std::vector<int> ldpcCoding(const std::vector<int>& input) {
+    // This is a placeholder for LDPC encoding; in reality, LDPC encoding is more complex.
+    return input;  // Return input as-is for simplicity
+}
+
+// Placeholder function for Rate Matching
+std::vector<int> rateMatching(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    output.resize(N);  // Simplified resizing
+    return output;
+}
+
+// Placeholder function for Code Block Concatenation
+std::vector<int> concatenateCodeBlocks(const std::vector<int>& input) {
+    return input;  // Direct concatenation for simplicity
+}
+
+// Placeholder function for Scrambling
+std::vector<int> scrambling(const std::vector<int>& input) {
+    std::vector<int> output = input;
+    Ptr<UniformRandomVariable> random = CreateObject<UniformRandomVariable>();
+    for (auto& bit : output) {
+        bit ^= random->GetInteger(0, 1);
+    }
+    return output;
+}
+
+// Placeholder function for Modulation (QPSK)
+std::vector<std::complex<double>> modulation(const std::vector<int>& input) {
+    std::vector<std::complex<double>> output;
+    for (size_t i = 0; i < input.size(); i += QPSK_BITS_PER_SYMBOL) {
+        double real = (input[i] == 0 ? -1.0 : 1.0);
+        double imag = (input[i + 1] == 0 ? -1.0 : 1.0);
+        output.emplace_back(real, imag);
+    }
+    return output;
+}
+
+// Placeholder function for Layer Mapping
+std::vector<std::complex<double>> layerMapping(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct mapping for simplicity
+}
+
+// Placeholder function for Antenna Port Mapping
+std::vector<std::complex<double>> antennaPortMapping(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct mapping for simplicity
+}
+
+// Placeholder function for VRB to PRB Mapping
+std::vector<std::complex<double>> vrbToPrbMapping(const std::vector<std::complex<double>>& input) {
+    return input;  // Direct mapping for simplicity
+}
+
+int main(int argc, char *argv[]) {
+    // Setup time and logging
+    Time simTime = MilliSeconds(100);
+    LogComponentEnable ("PDSCHTransportProcess", LOG_LEVEL_INFO);
+
+    // Create nodes
+    NodeContainer ueNodes, enbNodes;
+    ueNodes.Create(1);
+    enbNodes.Create(1);
+
+    // Install Mobility Model
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(ueNodes);
+    mobility.Install(enbNodes);
+
+    // Install Internet Stack
+    InternetStackHelper internet;
+    internet.Install(ueNodes);
+    internet.Install(enbNodes);
+
+    // Process PDSCH
+    auto tb = generateTransportBlock();
+    printVector(tb, "Transport Block");
+
+    auto tbWithCrc = attachTbCrc(tb);
+    printVector(tbWithCrc, "Transport Block with CRC");
+
+    auto ldpcEncoded = ldpcCoding(tbWithCrc);
+    printVector(ldpcEncoded, "LDPC Encoded");
+
+    auto rateMatched = rateMatching(ldpcEncoded);
+    printVector(rateMatched, "Rate Matched");
+
+    auto concatenatedBlocks = concatenateCodeBlocks(rateMatched);
+    printVector(concatenatedBlocks, "Code Block Concatenation");
+
+    auto scrambled = scrambling(concatenatedBlocks);
+    printVector(scrambled, "Scrambled");
+
+    auto modulated = modulation(scrambled);
+    printVector(modulated, "Modulated");
+
+    auto layerMapped = layerMapping(modulated);
+    printVector(layerMapped, "Layer Mapped");
+
+    auto antennaMapped = antennaPortMapping(layerMapped);
+    printVector(antennaMapped, "Antenna Port Mapped");
+
+    auto vrbMapped = vrbToPrbMapping(antennaMapped);
+    printVector(vrbMapped, "VRB to PRB Mapped");
+
+    // Run simulation
+    Simulator::Stop(simTime);
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
