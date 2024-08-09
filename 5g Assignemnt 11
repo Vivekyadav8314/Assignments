@@ -1,0 +1,52 @@
+*PDSCH process
+Each component in the Physical Downlink Shared Channel (PDSCH) process:
+
+1. Transport Block (TB): The Transport Block is the main data unit prepared for transmission, containing the information to be sent over the network.
+
+	• Note: Release 15 (Rel 15) supports up to 2 Transport Blocks (TBS)
+	
+2. TB CRC (Transport Block Cyclic Redundancy Check): Adds error detection capability to the Transport Block, ensuring data integrity by detecting errors during transmission.
+Or 
+CRC is attached to the transport Block to detect errors.
+	•     For TBS > 3824, a 24-bit CRC is used.
+	• For TBS ≤ 3824, a 16-bit CRC is used.
+
+
+
+3. LDPC Base Graph: Determines how the data will be encoded for error correction, selecting the base graph based on the maximum Code Block size (Kcb).
+
+	• Max Code Block size (Kcb) based LDPC base graph selection:
+		• Type 1: 8448
+		• Type 2: 3840
+	
+
+4. Code Block (CB): Divides the Transport Block into smaller Code Blocks, each processed and protected with its own CRC.
+	• Each CB gets a 24-bit CRC attached
+
+5. LDPC Coding: Applies LDPC coding to each Code Block, providing robust error correction capabilities.
+	•  LDPC-based channel coding is used
+	   
+
+6. Rate Matching: Adjusts the code bits to fit the available resource.
+	• Code bits are mapped to resource blocks.
+
+7. Code Block Concatenation: The Code Blocks are concatenated back into a single stream after rate matching.
+
+8. Scrambling: Mixing the Data.
+	• Scrambled using a 31-length Gold sequence.
+
+9. Modulation: Modulates the scrambled data to prepare it for transmission over the air.
+	• Modulation table selection includes 64 QAM and 256 QAM.
+
+10. Layer Mapping: Maps modulated symbols onto different layers based on the MIMO configuration.
+	• Modulation symbols are mapped to different layers depending on the MIMO configuration.
+
+11. Antenna Port: Assigns mapped layers to specific antenna ports for transmission.
+
+12. VRB Mapping (Virtual Resource Block Mapping): Maps data from Virtual Resource Blocks (VRBs) to Physical Resource Blocks (PRBs).
+	• VRBs can be mapped to PRBs either interleaved or non-interleaved.
+
+13. VRB to PRB Mapping: The final mapping of Virtual Resource Blocks to Physical Resource Blocks.
+
+
+These steps ensure data is encoded, error-protected, and prepared for transmission, optimizing efficiency and reliability in a 5G network.
