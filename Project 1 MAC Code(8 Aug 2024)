@@ -1,0 +1,99 @@
+
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/lte-module.h"
+#include "ns3/internet-module.h"
+
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE("RandomAccessSimulation");
+
+class MacLayerSimulation
+{
+public:
+    MacLayerSimulation() 
+    {
+        std::srand(std::time(0));  // Seed for random number generation
+    }
+
+    void StartRandomAccessProcedure()
+    {
+        int preamble = GeneratePreamble();
+        NS_LOG_INFO("Preamble generated and transmitted: " << preamble);
+
+        Simulator::Schedule(Seconds(RANDOM_ACCESS_DELAY), &MacLayerSimulation::WaitForResponse, this, preamble);
+    }
+
+private:
+    const int MAX_PREAMBLES = 64;
+    const int RANDOM_ACCESS_DELAY = 3;
+    const int MAX_TIMING_ADVANCE = 128;  // Example maximum timing advance value
+
+    int GeneratePreamble()
+    {
+        return std::rand() % MAX_PREAMBLES;
+    }
+
+    void WaitForResponse(int preamble)
+    {
+        NS_LOG_INFO("Waiting for response...");
+
+        // Simulate an 80% chance of receiving a response
+        bool isResponseReceived = (std::rand() % 10) < 8;
+
+        if (isResponseReceived)
+        {
+            int timingAdvance = std::rand() % MAX_TIMING_ADVANCE;
+            NS_LOG_INFO("Preamble accepted. Timing Advance: " << timingAdvance << " Proceeding with RAR and RRC setup request.");
+            RarResponse(timingAdvance);
+            RrcSetupRequest();
+            ContentionResolution();
+        }
+        else
+        {
+            NS_LOG_INFO("Preamble collision detected. Random Access Procedure failed.");
+        }
+    }
+
+    void RarResponse(int timingAdvance)
+    {
+        NS_LOG_INFO("RAR: Timing Advance = " << timingAdvance << ", Allocated Uplink Resources.");
+    }
+
+    void RrcSetupRequest()
+    {
+        NS_LOG_INFO("RRC Setup Request sent to the network.");
+    }
+
+    void ContentionResolution()
+    {
+        NS_LOG_INFO("Contention Resolution process started.");
+
+        // Simulate a 90% success rate for contention resolution
+        if ((std::rand() % 10) < 9)
+        {
+            NS_LOG_INFO("Contention Resolution successful. UE is now connected to the network.");
+        }
+        else
+        {
+            NS_LOG_INFO("Contention Resolution failed. UE will retry the Random Access Procedure.");
+        }
+    }
+};
+
+int main(int argc, char *argv[])
+{
+    // Set up logging
+    LogComponentEnable("RandomAccessSimulation", LOG_LEVEL_INFO);
+
+    // Create the simulation environment
+    MacLayerSimulation macLayerSim;
+    macLayerSim.StartRandomAccessProcedure();
+
+    // Run the simulation
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
