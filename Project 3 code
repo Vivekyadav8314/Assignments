@@ -1,0 +1,171 @@
+#include "ns3/lte-module.h"
+#include "ns3/network-module.h"
+#include "ns3/core-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/config-store.h"
+#include "ns3/antenna-module.h"
+#include "ns3/log.h"
+
+using namespace ns3;
+
+class BeamformingPdschComparison
+{
+public:
+    void RunComparison();
+
+private:
+    void Configure(bool enableBeamforming);
+    void InstallEnb();
+    void InstallUe();
+    void ConfigureBeamforming();
+    void CollectResults(std::string scenario);
+
+    NodeContainer enbNodes;
+    NodeContainer ueNodes;
+    NetDeviceContainer enbDevs;
+    NetDeviceContainer ueDevs;
+    Ptr<LteHelper> lteHelper;
+    Ptr<EpcHelper> epcHelper;
+    bool beamformingEnabled;
+
+    double totalSinr;  // Sum of SINR values for averaging
+    double totalThroughput;  // Sum of throughput values for averaging
+    uint32_t sampleCount;  // Number of SINR/throughput samples
+};
+
+void BeamformingPdschComparison::Configure(bool enableBeamforming)
+{
+    beamformingEnabled = enableBeamforming;
+
+    lteHelper = CreateObject<LteHelper>();
+    epcHelper = CreateObject<PointToPointEpcHelper>();
+    lteHelper->SetEpcHelper(epcHelper);
+
+    // Create the eNB and UE nodes
+    enbNodes.Create(1);
+    ueNodes.Create(1);
+
+    // Set up mobility model for the eNB and UE
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+
+    // Set positions: eNB at (0,0,0) and UE at (100,0,0)
+    mobility.Install(enbNodes);
+    Ptr<MobilityModel> enbMobility = enbNodes.Get(0)->GetObject<MobilityModel>();
+    enbMobility->SetPosition(Vector(0.0, 0.0, 0.0));
+    NS_LOG_UNCOND("Node 0 (eNB) installed at (0.0, 0.0, 0.0)");
+
+    mobility.Install(ueNodes);
+    Ptr<MobilityModel> ueMobility = ueNodes.Get(0)->GetObject<MobilityModel>();
+    ueMobility->SetPosition(Vector(100.0, 0.0, 0.0));
+    NS_LOG_UNCOND("Node 1 (UE) installed at (100.0, 0.0, 0.0)");
+}
+
+void BeamformingPdschComparison::InstallEnb()
+{
+    // Install LTE devices on eNB
+    enbDevs = lteHelper->InstallEnbDevice(enbNodes);
+}
+
+void BeamformingPdschComparison::InstallUe()
+{
+    // Install LTE devices on UE
+    ueDevs = lteHelper->InstallUeDevice(ueNodes);
+
+    // Attach UE to eNB
+    lteHelper->Attach(ueDevs, enbDevs.Get(0));
+}
+
+void BeamformingPdschComparison::ConfigureBeamforming()
+{
+    if (beamformingEnabled)
+    {
+        // Create a beamforming vector for the eNB
+        Ptr<UniformPlanarArray> antennaArray = CreateObject<UniformPlanarArray>(4, 4, 0.5, 0.5);
+        antennaArray->SetAttribute("AntennaElement", PointerValue(CreateObject<IsotropicAntennaModel>()));
+
+        // Assign the beamforming model to the eNB
+        Ptr<LteEnbPhy> enbPhy = enbDevs.Get(0)->GetObject<LteEnbNetDevice>()->GetPhy();
+        Ptr<LteBeamformingModel> bfModel = CreateObject<LteBeamformingModel>();
+        bfModel->SetAntenna(antennaArray);
+
+        enbPhy->SetAttribute("BeamformingModel", PointerValue(bfModel));
+
+        // Assign the beam direction towards the UE
+        Vector uePosition = ueNodes.Get(0)->GetObject<MobilityModel>()->GetPosition();
+        bfModel->SetBeamDirection(uePosition);
+
+        NS_LOG_UNCOND("Beamforming configured: eNB beam directed towards UE at " << uePosition);
+    }
+    else
+    {
+        NS_LOG_UNCOND("Beamforming is disabled in this scenario.");
+    }
+}
+
+void BeamformingPdschComparison::CollectResults(std::string scenario)
+{
+    // Enable PHY layer tracing
+    lteHelper->EnablePhyTraces();
+
+    // Example: Collecting SINR and throughput statistics
+    totalSinr = 0.0;
+    totalThroughput = 0.0;
+    sampleCount = 0;
+
+    Config::ConnectWithoutContext("/NodeList//DeviceList//LteUePhy/ReportCurrentCellRsrpSinr",
+        MakeCallback([&](Ptr<const SpectrumValue> sinr) {
+            double sinrDb = 10 * std::log10(sinr->operator[] (0)); // Convert SINR to dB
+            totalSinr += sinrDb;
+            sampleCount++;
+        }));
+
+    Config::ConnectWithoutContext("/NodeList//ApplicationList//$ns3::PacketSink/Rx",
+        MakeCallback([&](Ptr<const Packet> packet, const Address &address) {
+            totalThroughput += packet->GetSize() * 8 / 1e6; // Convert to Mbps
+        }));
+
+    NS_LOG_UNCOND("Simulation running...");
+    Simulator::Stop(Seconds(1.0));
+    Simulator::Run();
+    Simulator::Destroy();
+    NS_LOG_UNCOND("Simulation completed. Collecting results...");
+
+    if (sampleCount > 0)
+    {
+        double averageSinr = totalSinr / sampleCount;
+        NS_LOG_UNCOND(scenario << " - Average SINR: " << averageSinr << " dB");
+    }
+
+    NS_LOG_UNCOND(scenario << " - Total Throughput: " << totalThroughput << " Mbps");
+}
+
+void BeamformingPdschComparison::RunComparison()
+{
+    NS_LOG_UNCOND("Starting simulation...");
+
+    // Scenario 1: Without Beamforming
+    Configure(false);
+    InstallEnb();
+    InstallUe();
+    ConfigureBeamforming();
+    CollectResults("Without Beamforming");
+
+    // Scenario 2: With Beamforming
+    Configure(true);
+    InstallEnb();
+    InstallUe();
+    ConfigureBeamforming();
+    CollectResults("With Beamforming");
+}
+
+int main(int argc, char *argv[])
+{
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+
+    BeamformingPdschComparison comparison;
+    comparison.RunComparison();
+
+    return 0;
+}
