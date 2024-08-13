@@ -1,0 +1,68 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/wifi-module.h"
+#include "ns3/spectrum-module.h"
+#include "ns3/mimo-spectrum-phy.h"
+#include "ns3/error-rate-model.h"
+
+using namespace ns3;
+
+int main(int argc, char *argv[]) {
+    // LogComponentEnable("MimoSimulator", LOG_LEVEL_INFO);
+    
+    // Define the number of antennas
+    uint16_t numTxAntennas = 4;
+    uint16_t numRxAntennas = 4;
+
+    // Set up the nodes (transmitter and receiver)
+    NodeContainer nodes;
+    nodes.Create(2); // Two nodes: one transmitter, one receiver
+
+    // Configure mobility model for nodes (e.g., static)
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(nodes);
+
+    // Set up the MIMO channel with Rayleigh fading
+    Ptr<SpectrumChannel> channel = CreateObject<MultiModelSpectrumChannel>();
+    Ptr<FriisPropagationLossModel> lossModel = CreateObject<FriisPropagationLossModel>();
+    Ptr<ConstantSpeedPropagationDelayModel> delayModel = CreateObject<ConstantSpeedPropagationDelayModel>();
+    channel->AddPropagationLossModel(lossModel);
+    channel->SetPropagationDelayModel(delayModel);
+
+    // Set up MIMO Spectrum PHY
+    Ptr<MimoSpectrumPhy> txPhy = CreateObject<MimoSpectrumPhy>();
+    Ptr<MimoSpectrumPhy> rxPhy = CreateObject<MimoSpectrumPhy>();
+    txPhy->SetNumberOfAntennas(numTxAntennas);
+    rxPhy->SetNumberOfAntennas(numRxAntennas);
+
+    txPhy->SetChannel(channel);
+    rxPhy->SetChannel(channel);
+
+    // Attach PHYs to the nodes
+    txPhy->SetMobility(nodes.Get(0)->GetObject<MobilityModel>());
+    rxPhy->SetMobility(nodes.Get(1)->GetObject<MobilityModel>());
+
+    // Set up a simple MIMO transmission
+    Ptr<Packet> packet = Create<Packet>(1000); // 1000 bytes of data
+    SpectrumValue txSignal = txPhy->Transmit(packet);
+    
+    // Simulate signal reception
+    SpectrumValue rxSignal = rxPhy->Receive(txSignal);
+
+    // Performance Evaluation: Calculate SNR, BER, etc.
+    double snr = rxPhy->CalculateSnr(rxSignal);
+    double ber = rxPhy->CalculateBer(snr);
+
+    // Output the results
+    NS_LOG_INFO("SNR: " << snr << " dB");
+    NS_LOG_INFO("BER: " << ber);
+
+    // Run the simulator
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
