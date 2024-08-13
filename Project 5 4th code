@@ -1,0 +1,86 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/wifi-module.h"
+#include "ns3/mimo-module.h"
+
+using namespace ns3;
+
+int main (int argc, char *argv[])
+{
+  // Set up the simulator environment
+  CommandLine cmd;
+  cmd.Parse (argc, argv);
+
+  // Create nodes for transmitters and receivers
+  NodeContainer transmitterNodes;
+  transmitterNodes.Create (8); // 8 Transmitters
+
+  NodeContainer receiverNodes;
+  receiverNodes.Create (4); // 4 Receivers
+
+  // Set up mobility models for nodes (e.g., fixed positions)
+  MobilityHelper mobility;
+  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+
+  // Position transmitters
+  mobility.Install (transmitterNodes);
+
+  // Position receivers
+  mobility.Install (receiverNodes);
+
+  // Configure WiFi Channel
+  YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
+  YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
+  phy.SetChannel (channel.Create ());
+
+  // Set up MIMO Model (Beamforming)
+  MimoHelper mimo;
+  mimo.SetStandard (WIFI_PHY_STANDARD_80211ac);
+  
+  // Set up the MIMO parameters, like antennas and modes
+  mimo.SetMimoAntennas (8, 4); // 8 Tx, 4 Rx
+  mimo.SetMimoModes ("SU-MIMO"); // Single User MIMO
+
+  // Install MIMO on the transmitter nodes
+  NetDeviceContainer transmitterDevices;
+  transmitterDevices = mimo.Install (phy, transmitterNodes);
+
+  // Install MIMO on the receiver nodes
+  NetDeviceContainer receiverDevices;
+  receiverDevices = mimo.Install (phy, receiverNodes);
+
+  // Set up Internet stack
+  InternetStackHelper stack;
+  stack.Install (transmitterNodes);
+  stack.Install (receiverNodes);
+
+  // Assign IP addresses
+  Ipv4AddressHelper address;
+  address.SetBase ("192.168.1.0", "255.255.255.0");
+  Ipv4InterfaceContainer transmitterInterfaces = address.Assign (transmitterDevices);
+  Ipv4InterfaceContainer receiverInterfaces = address.Assign (receiverDevices);
+
+  // Create traffic applications (e.g., UDP)
+  UdpEchoServerHelper echoServer (9);
+
+  ApplicationContainer serverApps = echoServer.Install (receiverNodes.Get (0));
+  serverApps.Start (Seconds (1.0));
+  serverApps.Stop (Seconds (10.0));
+
+  UdpEchoClientHelper echoClient (receiverInterfaces.GetAddress (0), 9);
+  echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
+  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
+  echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
+
+  ApplicationContainer clientApps = echoClient.Install (transmitterNodes.Get (0));
+  clientApps.Start (Seconds (2.0));
+  clientApps.Stop (Seconds (10.0));
+
+  // Run the simulation
+  Simulator::Run ();
+  Simulator::Destroy ();
+
+  return 0;
+}
