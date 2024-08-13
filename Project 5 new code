@@ -1,0 +1,200 @@
+#include <ns3/core-module.h>
+#include <ns3/mobility-module.h>
+#include <ns3/network-module.h>
+#include <ns3/internet-module.h>
+#include <ns3/point-to-point-module.h>
+#include <vector>
+#include <cmath>
+#include <complex>
+
+using namespace ns3;
+using namespace std;
+
+NS_LOG_COMPONENT_DEFINE("MimoSimulation");
+
+const int NUM_TX_ANTENNAS = 2;  // Number of transmit antennas
+const int NUM_RX_ANTENNAS = 2;  // Number of receive antennas
+const int NUM_SYMBOLS = 100;    // Number of symbols to transmit
+const double SNR = 10.0;        // Signal-to-noise ratio in dB
+
+typedef std::complex<double> Complex;
+
+// Function to generate random noise
+vector<Complex> generateNoise(int numSymbols, double snr_dB) {
+    double snr_linear = pow(10, snr_dB / 10.0);
+    double noisePower = 1.0 / snr_linear;
+    vector<Complex> noise(numSymbols);
+    Ptr<UniformRandomVariable> rng = CreateObject<UniformRandomVariable>();
+    
+    for (int i = 0; i < numSymbols; ++i) {
+        double real = rng->GetValue(-sqrt(noisePower / 2.0), sqrt(noisePower / 2.0));
+        double imag = rng->GetValue(-sqrt(noisePower / 2.0), sqrt(noisePower / 2.0));
+        noise[i] = Complex(real, imag);
+    }
+    return noise;
+}
+
+// Function to simulate the channel
+vector<vector<Complex>> simulateChannel() {
+    vector<vector<Complex>> channel(NUM_RX_ANTENNAS, vector<Complex>(NUM_TX_ANTENNAS));
+    Ptr<NormalRandomVariable> rng = CreateObject<NormalRandomVariable>();
+
+    for (int i = 0; i < NUM_RX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_TX_ANTENNAS; ++j) {
+            double real = rng->GetValue();
+            double imag = rng->GetValue();
+            channel[i][j] = Complex(real, imag);
+        }
+    }
+    return channel;
+}
+
+// Spatial Multiplexing
+vector<Complex> spatialMultiplexing(const vector<Complex>& data, const vector<vector<Complex>>& channel) {
+    vector<Complex> transmitted(NUM_RX_ANTENNAS, Complex(0, 0));
+
+    for (int i = 0; i < NUM_RX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_TX_ANTENNAS; ++j) {
+            transmitted[i] += channel[i][j] * data[j];
+        }
+    }
+    return transmitted;
+}
+
+// Beamforming
+vector<Complex> beamforming(const vector<Complex>& data, const vector<vector<Complex>>& channel) {
+    // Simplified beamforming using identity matrix
+    vector<Complex> transmitted(NUM_RX_ANTENNAS, Complex(0, 0));
+    
+    vector<vector<Complex>> beamformingMatrix(NUM_RX_ANTENNAS, vector<Complex>(NUM_TX_ANTENNAS, Complex(0, 0)));
+    for (int i = 0; i < min(NUM_RX_ANTENNAS, NUM_TX_ANTENNAS); ++i) {
+        beamformingMatrix[i][i] = Complex(1, 0);
+    }
+
+    for (int i = 0; i < NUM_RX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_TX_ANTENNAS; ++j) {
+            transmitted[i] += beamformingMatrix[i][j] * data[j];
+        }
+    }
+    return transmitted;
+}
+
+// Diversity Reception
+vector<Complex> diversityReception(const vector<Complex>& received) {
+    // Simple diversity combining (e.g., maximal ratio combining)
+    vector<Complex> combined(NUM_TX_ANTENNAS, Complex(0, 0));
+
+    for (int i = 0; i < NUM_TX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_RX_ANTENNAS; ++j) {
+            combined[i] += received[j];
+        }
+    }
+    return combined;
+}
+
+// MIMO Reception with Zero-Forcing Equalization
+vector<Complex> mimoReception(const vector<Complex>& received, const vector<vector<Complex>>& channel) {
+    vector<Complex> equalized(NUM_TX_ANTENNAS, Complex(0, 0));
+
+    // Simple zero-forcing equalization (pseudo-inverse of channel matrix)
+    vector<vector<Complex>> pseudoInverse(NUM_TX_ANTENNAS, vector<Complex>(NUM_RX_ANTENNAS, Complex(0, 0)));
+    // Compute pseudo-inverse (for demo purposes, using identity matrix)
+    for (int i = 0; i < NUM_TX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_RX_ANTENNAS; ++j) {
+            pseudoInverse[i][j] = (i == j) ? Complex(1, 0) : Complex(0, 0);
+        }
+    }
+
+    for (int i = 0; i < NUM_TX_ANTENNAS; ++i) {
+        for (int j = 0; j < NUM_RX_ANTENNAS; ++j) {
+            equalized[i] += pseudoInverse[i][j] * received[j];
+        }
+    }
+    return equalized;
+}
+
+// Function to evaluate performance improvements
+void evaluatePerformance(const vector<Complex>& transmitted, const vector<Complex>& received, const vector<Complex>& equalized) {
+    Complex transmissionError = accumulate(transmitted.begin(), transmitted.end(), Complex(0, 0)) - accumulate(received.begin(), received.end(), Complex(0, 0));
+    Complex equalizationError = accumulate(transmitted.begin(), transmitted.end(), Complex(0, 0)) - accumulate(equalized.begin(), equalized.end(), Complex(0, 0));
+
+    NS_LOG_INFO("Transmission Error: " << transmissionError);
+    NS_LOG_INFO("Equalization Error: " << equalizationError);
+}
+
+void RunSimulation() {
+    // Simulate MIMO transmission and reception
+    vector<Complex> data(NUM_TX_ANTENNAS, Complex(1, 0)); // Example data symbols
+    vector<vector<Complex>> channel = simulateChannel();
+    vector<Complex> noise = generateNoise(NUM_RX_ANTENNAS, SNR);
+    
+    // Spatial Multiplexing
+    vector<Complex> transmittedSM = spatialMultiplexing(data, channel);
+    
+    // Add noise
+    vector<Complex> receivedSM(NUM_RX_ANTENNAS);
+    for (int i = 0; i < NUM_RX_ANTENNAS; ++i) {
+        receivedSM[i] = transmittedSM[i] + noise[i];
+    }
+
+    // Beamforming
+    vector<Complex> transmittedBF = beamforming(data, channel);
+    
+    // Add noise
+    vector<Complex> receivedBF(NUM_RX_ANTENNAS);
+    for (int i = 0; i < NUM_RX_ANTENNAS; ++i) {
+        receivedBF[i] = transmittedBF[i] + noise[i];
+    }
+
+    // Diversity Reception
+    vector<Complex> combinedData = diversityReception(receivedSM);
+
+    // MIMO Reception
+    vector<Complex> equalized = mimoReception(receivedSM, channel);
+
+    // Output results
+    NS_LOG_INFO("Transmitted Data (Spatial Multiplexing): ");
+    for (const auto& d : data) NS_LOG_INFO(d);
+    NS_LOG_INFO("");
+
+    NS_LOG_INFO("Received Data (Spatial Multiplexing): ");
+    for (const auto& r : receivedSM) NS_LOG_INFO(r);
+    NS_LOG_INFO("");
+
+    NS_LOG_INFO("Transmitted Data (Beamforming): ");
+    for (const auto& d : data) NS_LOG_INFO(d);
+    NS_LOG_INFO("");
+
+    NS_LOG_INFO("Received Data (Beamforming): ");
+    for (const auto& r : receivedBF) NS_LOG_INFO(r);
+    NS_LOG_INFO("");
+
+    NS_LOG_INFO("Combined Data (Diversity Reception): ");
+    for (const auto& c : combinedData) NS_LOG_INFO(c);
+    NS_LOG_INFO("");
+
+    NS_LOG_INFO("Equalized Data: ");
+    for (const auto& e : equalized) NS_LOG_INFO(e);
+    NS_LOG_INFO("");
+
+    // Evaluate Performance
+    evaluatePerformance(data, receivedSM, equalized);
+}
+
+int main(int argc, char *argv[]) {
+    // Enable ns-3 logging for debugging
+    LogComponentEnable("MimoSimulation", LOG_LEVEL_INFO);
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+    
+    // Schedule the simulation run
+    Simulator::Schedule(Seconds(0.0), &RunSimulation);
+    
+    // Run the simulation
+    Simulator::Run();
+    
+    // Clean up
+    Simulator::Destroy();
+
+    return 0;
+}
