@@ -1,0 +1,84 @@
+#include <ns3/core-module.h>
+#include <ns3/network-module.h>
+#include <ns3/mobility-module.h>
+#include <ns3/internet-module.h>
+#include <ns3/lte-module.h>
+
+using namespace ns3;
+
+// Define constants for the PDCCH simulation
+const uint32_t NUM_RB = 100;  // Number of Resource Blocks
+const uint32_t NUM_UE = 10;   // Number of User Equipments
+const uint32_t CORESET_SIZE = 16;  // Example size for CORESET
+
+// Function to simulate resource element mapping
+void MapResourceElements(uint32_t aggregationLevel, uint32_t coreSetSize, uint32_t numUe) {
+    std::cout << "Mapping PDCCH resources..." << std::endl;
+    std::cout << "Aggregation Level: " << aggregationLevel << std::endl;
+    std::cout << "CORESET Size: " << coreSetSize << std::endl;
+    std::cout << "Number of UEs: " << numUe << std::endl;
+
+    // Example mapping logic
+    uint32_t resourcePerUe = coreSetSize / numUe;
+    for (uint32_t ueId = 0; ueId < numUe; ++ueId) {
+        std::cout << "UE " << ueId << " allocated " << resourcePerUe << " resources" << std::endl;
+    }
+}
+
+// Function to adapt aggregation levels
+void AdaptAggregationLevel(uint32_t &aggregationLevel, double channelQuality) {
+    // Simple adaptation logic based on channel quality
+    if (channelQuality > 0.8) {
+        aggregationLevel = 4;  // High aggregation level
+    } else if (channelQuality > 0.5) {
+        aggregationLevel = 2;  // Medium aggregation level
+    } else {
+        aggregationLevel = 1;  // Low aggregation level
+    }
+
+    std::cout << "Adapted Aggregation Level: " << aggregationLevel << std::endl;
+}
+
+int main(int argc, char *argv[]) {
+    // Set up ns-3 simulation environment
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+
+    // Initialize variables
+    uint32_t aggregationLevel = 2; // Starting aggregation level
+    double channelQuality = 0.7;   // Example channel quality (0 to 1)
+
+    // Adapt aggregation level based on channel quality
+    AdaptAggregationLevel(aggregationLevel, channelQuality);
+
+    // Map resources for the given number of UEs
+    MapResourceElements(aggregationLevel, CORESET_SIZE, NUM_UE);
+
+    return 0;
+}
+
+
+Output
+cloud@open5gs:~/ns-allinone-3.42/ns-3.42$ ./ns3 run scratch/procode1.cc
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+Adapted Aggregation Level: 2
+Mapping PDCCH resources...
+Aggregation Level: 2
+CORESET Size: 16
+Number of UEs: 10
+UE 0 allocated 1 resources
+UE 1 allocated 1 resources
+UE 2 allocated 1 resources
+UE 3 allocated 1 resources
+UE 4 allocated 1 resources
+UE 5 allocated 1 resources
+UE 6 allocated 1 resources
+UE 7 allocated 1 resources
+UE 8 allocated 1 resources
+UE 9 allocated 1 resources
+
+
+
+
+
