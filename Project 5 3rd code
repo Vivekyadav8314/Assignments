@@ -198,3 +198,35 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+Output:-
+cloud@open5gs:~/ns-allinone-3.42/ns-3.42$ ./ns3 run scratch/proj5code.cc
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+Transmitted Data (Spatial Multiplexing): 
+(1,0)
+(1,0)
+
+Received Data (Spatial Multiplexing): 
+(1.26356,-1.98026)
+(-1.42179,1.14202)
+
+Transmitted Data (Beamforming): 
+(1,0)
+(1,0)
+
+Received Data (Beamforming): 
+(1.14988,0.0117014)
+(0.960284,-0.216324)
+
+Combined Data (Diversity Reception): 
+(-0.158227,-0.838243)
+(-0.158227,-0.838243)
+
+Equalized Data: 
+(1.26356,-1.98026)
+(-1.42179,1.14202)
+
+Transmission Error: (2.15823,0.838243)
+Equalization Error: (2.15823,0.838243)
