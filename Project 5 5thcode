@@ -1,0 +1,111 @@
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/mobility-module.h"
+#include "ns3/wifi-module.h"
+#include "ns3/yans-wifi-helper.h"
+
+#include <iostream>
+#include <vector>
+#include <complex>
+
+using namespace ns3;
+
+// MIMO System Class Definition (Same as in your previous code)
+class MIMOSystem {
+public:
+    int txAntennas;
+    int rxAntennas;
+    std::vector<std::vector<std::complex<double>>> H;
+
+    MIMOSystem(int tx, int rx) : txAntennas(tx), rxAntennas(rx) {
+H.resize(rx, std::vector<std::complex<double>>(tx));
+        for (int i = 0; i < rx; ++i) {
+            for (int j = 0; j < tx; ++j) {
+                H[i][j] = std::complex<double>(static_cast<double>(rand()) / RAND_MAX, static_cast<double>(rand()) / RAND_MAX);
+            }
+        }
+    }
+
+    void displayChannelMatrix() {
+        std::cout << "Channel Matrix H:\n";
+        for (const auto& row : H) {
+            for (const auto& elem : row) {
+                std::cout << elem << " ";
+            }
+            std::cout << "\n";
+        }
+    }
+};
+
+// Functions for Spatial Multiplexing and Beamforming (Same as in your previous code)
+std::vector<std::complex<double>> spatialMultiplexing(const std::vector<std::complex<double>>& data, const MIMOSystem& mimo) {
+    std::vector<std::complex<double>> received(mimo.rxAntennas, 0);
+    for (int i = 0; i < mimo.rxAntennas; ++i) {
+        for (int j = 0; j < mimo.txAntennas; ++j) {
+            received[i] += mimo.H[i][j] * data[j];
+        }
+    }
+    return received;
+}
+
+std::vector<std::complex<double>> beamforming(const std::vector<std::complex<double>>& data, const std::vector<std::complex<double>>& weights, const MIMOSystem& mimo) {
+    std::vector<std::complex<double>> received(mimo.rxAntennas, 0);
+    for (int i = 0; i < mimo.rxAntennas; ++i) {
+            received[i] += mimo.H[i][j] * data[j] * weights[j];
+        }
+    }
+    return received;
+}
+
+void applyFading(MIMOSystem& mimo, double fadingFactor) {
+    for (int i = 0; i < mimo.rxAntennas; ++i) {
+        for (int j = 0; j < mimo.txAntennas; ++j) {
+            mimo.H[i][j] *= fadingFactor;
+        }
+    }
+}
+
+int main(int argc, char *argv[]) {
+    // Initialize ns-3
+    CommandLine cmd;
+    cmd.Parse(argc, argv);
+
+    // MIMO System Setup
+    int txAntennas = 4;
+    int rxAntennas = 4;
+
+    MIMOSystem mimo(txAntennas, rxAntennas);
+    mimo.displayChannelMatrix();
+
+    std::vector<std::complex<double>> data = {1.0, 1.0, 1.0, 1.0};
+
+    // Spatial Multiplexing
+    auto receivedDataSM = spatialMultiplexing(data, mimo);
+    std::cout << "Received data after Spatial Multiplexing:\n";
+    for (const auto& val : receivedDataSM) {
+        std::cout << val << " ";
+    }
+    std::cout << "\n";
+
+    // Beamforming
+    std::vector<std::complex<double>> weights = {1.0, 0.5, 0.5, 1.0};
+    auto receivedDataBF = beamforming(data, weights, mimo);
+    std::cout << "Received data after Beamforming:\n";
+    for (const auto& val : receivedDataBF) {
+        std::cout << val << " ";
+    }
+    std::cout << "\n";
+
+    // Apply fading
+    applyFading(mimo, 0.8);
+    mimo.displayChannelMatrix();
+
+    // Simulation environment setup (you can expand this part)
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
+}
+
+
